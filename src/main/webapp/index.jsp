@@ -1198,8 +1198,9 @@
 
         var global_correct_line =null;
         var global_correct_markers=[];
-        var global_correct_coord = null;
-        //修改线路 -查看该线路及其站点
+        var global_correct_coords = [];
+        var global_tmp_stop_marker =  null;
+        //修改线路 -查看该线路及其站
         function getLineByID() {
             var $correctLineID = $("#correctLineID").val();
             $.ajax({
