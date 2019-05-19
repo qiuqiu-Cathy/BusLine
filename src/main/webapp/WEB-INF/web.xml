@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <welcome-file-list>
+    <welcome-file>QueryAllValidLineServlet</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <servlet>
+    <description></description>
+    <display-name>WelcomeServlet</display-name>
+    <servlet-name>WelcomeServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.WelcomeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WelcomeServlet</servlet-name>
+    <url-pattern>/WelcomeServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>LineQueryServlet</display-name>
+    <servlet-name>LineQueryServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.LineQueryServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LineQueryServlet</servlet-name>
+    <url-pattern>/LineQueryServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>StationServlet</display-name>
+    <servlet-name>StationServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.StationServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>StationServlet</servlet-name>
+    <url-pattern>/StationServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>QueryAllValidLineServlet</display-name>
+    <servlet-name>QueryAllValidLineServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.QueryAllValidLineServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryAllValidLineServlet</servlet-name>
+    <url-pattern>/QueryAllValidLineServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>QueryAllLinesServlet</display-name>
+    <servlet-name>QueryAllLinesServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.QueryAllLinesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryAllLinesServlet</servlet-name>
+    <url-pattern>/QueryAllLinesServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>DeleteLineByIdServlet</display-name>
+    <servlet-name>DeleteLineByIdServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.DeleteLineByIdServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteLineByIdServlet</servlet-name>
+    <url-pattern>/DeleteLineByIdServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>NeighbourCoverageServlet</display-name>
+    <servlet-name>NeighbourCoverageServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.NeighbourCoverageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NeighbourCoverageServlet</servlet-name>
+    <url-pattern>/NeighbourCoverageServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>LineQueryDetailServlet</display-name>
+    <servlet-name>LineQueryDetailServlet</servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.LineQueryDetailServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LineQueryDetailServlet</servlet-name>
+    <url-pattern>/LineQueryDetailServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>LineQueryLikeNameStopsListServlet </display-name>
+    <servlet-name>LineQueryLikeNameStopsListServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.LineQueryLikeNameStopsListServlet </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LineQueryLikeNameStopsListServlet </servlet-name>
+    <url-pattern>/LineQueryLikeNameStopsListServlet </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>LineQueryByIDServlet </display-name>
+    <servlet-name>LineQueryByIDServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.LineQueryByIDServlet </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LineQueryByIDServlet </servlet-name>
+    <url-pattern>/LineQueryByIDServlet </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>AddStopStartServlet </display-name>
+    <servlet-name>AddStopStartServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.AddStopStartServlet </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddStopStartServlet </servlet-name>
+    <url-pattern>/AddStopStartServlet </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>AddOldStopToLineServlet </display-name>
+    <servlet-name>AddOldStopToLineServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.AddOldStopToLineServlet </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddOldStopToLineServlet </servlet-name>
+    <url-pattern>/AddOldStopToLineServlet </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+  <description></description>
+  <display-name>AddNewStopToLineServlet </display-name>
+  <servlet-name>AddNewStopToLineServlet </servlet-name>
+  <servlet-class>com.qiu.shu.busline.action.AddNewStopToLineServlet </servlet-class>
+</servlet>
+  <servlet-mapping>
+    <servlet-name>AddNewStopToLineServlet </servlet-name>
+    <url-pattern>/AddNewStopToLineServlet </url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>QueryUnderConstructLineServlet </display-name>
+    <servlet-name>QueryUnderConstructLineServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.QueryUnderConstructLineServlet </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryUnderConstructLineServlet </servlet-name>
+    <url-pattern>/QueryUnderConstructLineServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>LineQueryByNameServlet </display-name>
+    <servlet-name>LineQueryByNameServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.LineQueryByNameServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LineQueryByNameServlet </servlet-name>
+    <url-pattern>/LineQueryByNameServlet</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+        <description></description>
+        <display-name>DeleteStationServlet </display-name>
+        <servlet-name>DeleteStationServlet </servlet-name>
+        <servlet-class>com.qiu.shu.busline.action.DeleteStationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteStationServlet </servlet-name>
+        <url-pattern>/DeleteStationServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+      <description></description>
+      <display-name>GetCoordByID </display-name>
+      <servlet-name>GetCoordByID </servlet-name>
+      <servlet-class>com.qiu.shu.busline.action.GetCoordByID</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>GetCoordByID </servlet-name>
+      <url-pattern>/GetCoordByID </url-pattern>
+    </servlet-mapping>
+</web-app>
