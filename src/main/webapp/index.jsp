@@ -1225,46 +1225,58 @@
                     global_correct_line = L.geoJSON([line], {
                         style: style
                     }).addTo(correctLineMap);
-                    console.log(global_correct_line)
+                    // console.log(global_correct_line)
                     //显示站点
                     var stops= JSON.parse(lineData.stops)
+                    console.log('stops',stops.length)
                     var len = stops.length;
-                    if(global_correct_line!=null) {
-                        for(var j=0;j<len;j++) {
-                            console.log("11"+global_correct_markers)
+                    if(global_correct_markers.length > 0) {
+                        for(var j=0;j<global_correct_markers.length;j++) {
+
                             correctLineMap.removeLayer(global_correct_markers[j])
                         }
                     }
-                    console.log(global_correct_markers)
+
                     global_correct_markers = [];
+                    console.log('global_current_markers clear size ' + global_correct_markers.length)
                     for(var j=0;j<len;j++) {
                         var stopLocation = stops[j].location;
                         var stationId = stops[j].id
                         var stationName = stops[j].name
                         var stationLoc = stops[j].location
                         var stationSequence = stops[j].sequence
-                        global_correct_markers[j] = L.marker(stopLocation)
+                        var stop = L.marker(stopLocation)
                             .addTo(correctLineMap)
                             .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
                             .openPopup();
+                        global_tmp_stop_marker = stop;
+                        global_correct_markers[j] = stop
                         //console.log(stationName)
-                        console.log(global_correct_markers[j])
+                        // console.log(global_correct_markers[j])
                     }
+                    console.log('final global marker size  = ' + global_correct_markers.length)
                     //显示线路拐点
                     $.ajax({
                         url:"GetCoordByID",
                         data:"queryLineID="+$correctLineID,
                         dataType:"json",
                         success:function (data) {
-                            console.log(data)
-                            var arraydata = eval(data);
-                            console.log(arraydata);
+                            // console.log(data)
+                             var arraydata = eval(data);
+                            // console.log(arraydata);
                             var len = arraydata.length;
+                            if (global_correct_coords.length > 0 ){
+                                for (var i = 0 ; i< global_correct_coords.length ; i++){
+                                    correctLineMap.removeLayer(global_correct_coords[i])
+                                }
+                                global_correct_coords = [];
+                            }
+
                             for(var i=0;i<len;i++)
                             {
                                 var stopLoc = arraydata[i]; //array[2]  0: 31.238547 1: 121.3208
                                 //console.log(stopLoc)
-                                L.circle(stopLoc, {
+                                global_correct_coords[i] = L.circle(stopLoc, {
                                     color: '#D1EEEE',
                                     weight: 0,
                                     fillColor: '#FF0000',
