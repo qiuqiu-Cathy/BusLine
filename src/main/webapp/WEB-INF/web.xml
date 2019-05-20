@@ -196,7 +196,7 @@
       <description></description>
       <display-name>AddCoordServlet</display-name>
       <servlet-name>AddCoordServlet </servlet-name>
-      <servlet-class>com.qiu.shu.busline.action.GetCoordByID</servlet-class>
+      <servlet-class>com.qiu.shu.busline.action.AddCoordServlet</servlet-class>
     </servlet>
     <servlet-mapping>
       <servlet-name>AddCoordServlet </servlet-name>
