@@ -347,6 +347,43 @@ public class LineQueryDao {
         }
     }
 
+    //更新 通过lineName来确定修改线路，将传入的coords更新至该line
+    public boolean updateCoordsByLineName(String lineName,String coords){
+        PreparedStatement pstmt = null;
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, USERNAME, PWD);
+            String sql = "update line set `coord`= ? where lineName = ? ";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, coords);
+            pstmt.setString(2,lineName);
+            int count  = pstmt.executeUpdate();//返回是否更新成功
+            if(count>0)
+                return true;
+            else
+                return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (pstmt != null)
+                    pstmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //更新 通过线路ID来更新线路的status为3(新建完成)
     public boolean updateLineStatusById(String id){
         PreparedStatement pstmt = null;

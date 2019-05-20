@@ -64,4 +64,9 @@ public class LineService {
     public boolean updateLineByNameCoordStops(String lineName,String coord, String stops){
         return lineQueryDao.updateLineByNameCoordStops(lineName,coord,stops);
     }
+
+    //根据完整线路名称及更新后的coord去更新line
+    public boolean updateCoordsByLineName(String lineName, String coords){
+        return lineQueryDao.updateCoordsByLineName(lineName,coords);
+    }
 }

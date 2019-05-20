@@ -884,13 +884,45 @@
             $.ajax({
                 url:"AddCoordServlet",
                 data:"obj="+ obj,
+                type: "post",
                 dataType:"json",
-                success:function (data) {
-                        // document.getElementById('continueNew').style.display='block';
-                        // document.getElementById('addStop').style.display='none';
-                        // document.getElementById('addLine').style.display='none';
-                        // document.getElementById('startNew').style.display='none';
-                        // document.getElementById('form').style.display='none';
+                success:function (result,testStatus) {
+                    var lineData = eval(result) ;//Object形式
+                    var line = JSON.parse(lineData.coordinates) //字符串转对象
+                    var style = {//查询线路展示的风格
+                        "color": "#ff0000",
+                        "weight": 2,
+                        "opacity": 0.55
+                    };
+                    if(global_add_line!=null){//清空之前图层中所有的线路
+                        underConstructionMap.removeLayer(global_add_line)
+                    }
+                    global_add_line = L.geoJSON([line], { style: style}).addTo(underConstructionMap);
+
+                    //显示站点
+                    var stops= JSON.parse(lineData.stops)
+                    var len = stops.length;
+                    if(global_add_markers.length>0){
+                        for(var i = 0;i<global_add_markers.length;i++){
+                            underConstructionMap.removeLayer(global_add_markers[i]);
+                        }
+                        global_add_markers = [];
+                    }
+                    for(var j=0;j<len;j++) {
+                        var stopLocation = stops[j].location;
+                        var stationId = stops[j].id
+                        var stationName = stops[j].name
+                        var stationLoc = stops[j].location
+                        var stationSequence = stops[j].sequence
+                        global_add_markers[j] = L.marker(stopLocation)
+                            .addTo(underConstructionMap)
+                            .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
+                            .openPopup();
+                    }
+                    continueNew();
+                    alert("拐点已添加至线路")
+                    //跳转至在建线路展示层
+                    $("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
                 },
                 error:function(xhr,errorMessage,e){
                     alert("系统异常！！")
