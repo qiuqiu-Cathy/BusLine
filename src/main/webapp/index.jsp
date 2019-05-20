@@ -186,8 +186,6 @@
                         <p><input type="button" value="继续" onclick="continueNew()"></p>
 
                     </div>
-<%--                    <input type="button"  value="添加原有站点" onclick="addOldStation()">--%>
-<%--                    <input type="button" value="添加新站点" onclick="addNewStation()">--%>
                 </form>
             </div>
         </div>
@@ -235,8 +233,9 @@
 <%--                    根据checkbox的值选择添加原有站点还是新站点，返回新建视图，显示目前已添加的站点组成的线路，status为2，在建--%>
                     <p><input type="button"  value="保存为在建" onclick="saveForContinue()"></p>
 <%--                    根据checkbox的值选择添加原有站点还是新站点，返回添加站点的视图，保存添加的站点，刷新目前已添加的站点组成的线路--%>
-                    <p><input type="button"  value="继续添加" onclick="saveAndContinue()"></p>
+                    <p><input type="button"  value="保存并继续添加站点" onclick="saveAndContinue()"></p>
 <%--                    根据checkbox的值选择添加原有站点还是新站点，返回新建视图，显示已添加完毕的站点组成的线路，status为3，新建完成--%>
+                    <p><input type="button" value="保存并继续添加拐点" onclick="saveAndAddCoord()"></p>
                     <p><input type="button"  value="完成" onclick="saveAndEnd()"></p>
                 </form>
             </div>
@@ -708,7 +707,7 @@
             document.getElementById('continueAddCoord').style.display='none';
         }
 
-        //添加线路 开始 添加拐点至线路
+        //添加线路-开始-添加拐点至线路
         function addCoord() {
             document.getElementById('addCoord').style.display='block';
             document.getElementById('continueAddCoord').style.display='none';
@@ -718,14 +717,64 @@
             document.getElementById('startNew').style.display='none';
         }
 
-        //添加线路 开始 添加拐点至线路
+        //添加线路 继续 添加拐点至线路
         function continueAddCoord() {
+            var $continueAddLineName=$('#continueAddLineName').val();
             document.getElementById('addCoord').style.display='none';
             document.getElementById('continueAddCoord').style.display='block';
             document.getElementById('continueNew').style.display='none';
             document.getElementById('addLine').style.display='none';
             document.getElementById('form').style.display='none';
             document.getElementById('startNew').style.display='none';
+            //根据在建列表的选择，显示正在建设中的线路
+            $.ajax({
+                url:"LineQueryByNameServlet",
+                data:"lineName="+$continueAddLineName,
+                dataType:"json",
+                success:function (result,testStatus) {
+                    var lineData = eval(result) ;//Object形式
+                    console.log(lineData)
+                    var line = JSON.parse(lineData.coordinates) //字符串转对象
+                    console.log(line)
+                    var style = {//查询线路展示的风格
+                        "color": "#ff0000",
+                        "weight": 2,
+                        "opacity": 0.55
+                    };
+                    if(global_add_line!=null){
+                        underConstructionMap.removeLayer(global_add_line);
+                    }
+                    global_add_line = L.geoJSON([line], {
+                        style: style
+                    }).addTo(underConstructionMap);
+
+                    //显示站点
+                    var stops= JSON.parse(lineData.stops);
+                    var len = stops.length;
+                    if(global_add_markers.length > 0){
+                        for(var i = 0;i < global_add_markers.length; i++ ){
+                            underConstructionMap.removeLayer(global_add_markers[i]);
+                        }
+                        global_add_markers = [];
+                    }
+                    for(var j=0;j<len;j++) {
+                        var stopLocation = stops[j].location;
+                        var stationId = stops[j].id;
+                        var stationName = stops[j].name;
+                        var stationLoc = stops[j].location;
+                        var stationSequence = stops[j].sequence;
+                        global_add_markers[j] = L.marker(stopLocation)
+                            .addTo(underConstructionMap)
+                            .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
+                            .openPopup();
+                    }
+                    //跳转至在建线路展示层
+                    $("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
+                },
+                error:function(xhr,errorMessage,e){
+                    alert("系统异常！！")
+                }
+            })
         }
 
         //添加线路-开始 添加站点 展示所有有效站点+对输入的车站名进行保存，新增数据库
@@ -770,6 +819,87 @@
             })
         }
 
+        //添加线路-开始-添加拐点至线路-保存该拐点 XXX
+        function saveCoord(){
+            var $newLineName = $("#newLineName").val();
+            var $addCoordLoc = $("#addCoordLoc").val(); //x,y
+            var $stopSequence = $("#stopSequence").val(); //拐点添加至该站点之后
+            var obj = JSON.stringify({
+                'lineName':$newLineName,
+                'loc': $addCoordLoc,
+                'sequence': $stopSequence
+            });
+            console.log(obj);
+            $.ajax({
+                url:"AddCoordServlet",
+                data:"obj="+ obj,
+                dataType:"json",
+                success:function (data) {
+                    // console.log(data)
+                    if(data=="0"){
+                        alert("新增线路失败！！")
+                    }else if(data=="2"){
+                        alert("该线路名已经存在！！请在在建列表中查看或是修改线路名")
+                    }else {
+                        alert("开始新建该线路！！")
+                        document.getElementById('addStop').style.display='block';
+                        document.getElementById('addLine').style.display='none';
+                        document.getElementById('startNew').style.display='none';
+                        document.getElementById('form').style.display='none';
+                        var arraydata = eval(data);
+                        var len = arraydata.length;
+                        for (var i = 0; i < len; i++) {
+                            var stopLocation = eval(arraydata[i].location);
+                            //将所有有效站点展示在有效线路层
+                            var stationName = arraydata[i].stationName
+                            var stationLoc = arraydata[i].location
+                            var marker = L.marker(stopLocation)
+                                .addTo(stationMap)
+                                .bindPopup(stationName + " " + stationLoc)
+                                .openPopup();
+                            //console.log(stationName)
+                        }
+                        //跳转至在建线路展示层
+                        $("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
+                    }
+                },
+                error:function(xhr,errorMessage,e){
+                    alert("系统异常！！")
+                }
+            })
+        }
+
+
+        //添加线路-继续-添加拐点至线路-保存该拐点
+        function continueSaveCoord(){
+            var $continueAddLineName = $('#continueAddLineName').val(); //在建线路名
+            var $addCoordLoc = $('#continueAddCoordLoc').val();//x,y
+            var $stopSequence = $('#continueStopSequence').val();//拐点添加至该站点之后
+            var obj = JSON.stringify({
+                'lineName':$continueAddLineName,
+                'loc': $addCoordLoc,
+                'sequence': $stopSequence
+            });
+            console.log(obj);
+            $.ajax({
+                url:"AddCoordServlet",
+                data:"obj="+ obj,
+                dataType:"json",
+                success:function (data) {
+                        // document.getElementById('continueNew').style.display='block';
+                        // document.getElementById('addStop').style.display='none';
+                        // document.getElementById('addLine').style.display='none';
+                        // document.getElementById('startNew').style.display='none';
+                        // document.getElementById('form').style.display='none';
+                },
+                error:function(xhr,errorMessage,e){
+                    alert("系统异常！！")
+                }
+            })
+
+        }
+
+
         //下拉在建中的线路列表
         $(function() {
             $.ajax({
@@ -788,8 +918,9 @@
             });
         })
 
-        //添加线路-保存为在建  根据chaeckBox保存线路的站点 展示刚才保存的站点线路图在地图上 status=2
+        //添加线路-保存为在建  根据checkBox保存线路的站点 展示刚才保存的站点线路图在地图上 status=2
         function saveForContinue() {
+            console.log("保存为在建"+ global_add_line)
             document.getElementById('addLine').style.display='block';
             document.getElementById('addStop').style.display='none';
             document.getElementById('form').style.display='none';
@@ -884,32 +1015,37 @@
                     dataType: "json",
                     success:function (result,testStatus) {
                         var lineData = eval(result) ;//Object形式
-                        console.log(lineData)
+                        //console.log(lineData)
                         var line = JSON.parse(lineData.coordinates) //字符串转对象
-                        console.log(line)
+                        //console.log(line)
                         var style = {//查询线路展示的风格
                             "color": "#ff0000",
                             "weight": 2,
                             "opacity": 0.55
                         };
-                        var queryLayer = L.geoJSON().addTo(underConstructionMap);
-                        queryLayer.addData([line]);
-                        L.geoJSON([line], {
+                        if(global_add_line!=null){
+                            underConstructionMap.removeLayer(global_add_line)
+                        }
+                        global_add_line = L.geoJSON([line], {
                             style: style
                         }).addTo(underConstructionMap);
 
                         //显示站点
                         var stops= JSON.parse(lineData.stops)
-                        console.log(stops)
                         var len = stops.length;
-                        console.log(len)
+                        if(global_add_markers.length>0){
+                            for(var i=0; i<global_add_markers.length;i++){
+                                underConstructionMap.removeLayer(global_add_markers[i])
+                            }
+                            global_add_markers =[];
+                        }
                         for(var j=0;j<len;j++) {
                             var stopLocation = stops[j].location;
                             var stationId = stops[j].id
                             var stationName = stops[j].name
                             var stationLoc = stops[j].location
                             var stationSequence = stops[j].sequence
-                            var marker = L.marker(stopLocation)
+                            global_add_markers[j] = L.marker(stopLocation)
                                 .addTo(underConstructionMap)
                                 .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
                                 .openPopup();

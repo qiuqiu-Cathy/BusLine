@@ -191,4 +191,15 @@
       <servlet-name>GetCoordByID </servlet-name>
       <url-pattern>/GetCoordByID </url-pattern>
     </servlet-mapping>
+
+    <servlet>
+      <description></description>
+      <display-name>AddCoordServlet</display-name>
+      <servlet-name>AddCoordServlet </servlet-name>
+      <servlet-class>com.qiu.shu.busline.action.GetCoordByID</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>AddCoordServlet </servlet-name>
+      <url-pattern>/AddCoordServlet </url-pattern>
+    </servlet-mapping>
 </web-app>
