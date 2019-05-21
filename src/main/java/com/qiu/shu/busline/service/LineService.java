@@ -74,4 +74,8 @@ public class LineService {
     public boolean updateCoordsByLineName(String lineName, String coords){
         return lineQueryDao.updateCoordsByLineName(lineName,coords);
     }
+
+    public boolean correctStatus(String lineID,String status){
+        return  lineQueryDao.correctStatus(lineID,status);
+    }
 }

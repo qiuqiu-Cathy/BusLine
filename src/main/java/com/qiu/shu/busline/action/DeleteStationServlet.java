@@ -2,8 +2,6 @@ package com.qiu.shu.busline.action;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.qiu.shu.busline.Util.DealCoordUtil;
-import com.qiu.shu.busline.domain.Coordinates;
 import com.qiu.shu.busline.domain.Line;
 import com.qiu.shu.busline.domain.Station;
 import com.qiu.shu.busline.domain.Stop;
@@ -12,30 +10,30 @@ import com.qiu.shu.busline.service.StationService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.qiu.shu.busline.Util.DealCoordUtil.changeIntoCoord;
 
 
-//接受前端传来的Json{"lineID":"20190506-151115","name":"翔方公路胜辛南路","sequence":"1"}
+//接受前端传来的Json{"lineID":"20190506-121927","name":"园区路园汽路","sequence":"1"}
+//{"lineID":"20190506-121927","name":"园区路百安公路","sequence":"2"}
+//{"lineID":"20190506-121927","name":"泰裕路泰丰路","sequence":"10"}
 //根据前端传来的Json中的lineID找到需要更新的线路，返回该线路目前的所有字段，根据stationName找到需要修改站点的ID等信息
 //通过站点的ID找到线路stops中的定位，删除该段stops并修改其后的sequence等值
+//删除 删除站点与前后站点之间的coord 特判删除的是否是第一站或是最后一个站点
 //将更新后的line的coord和stops打包成Json传递给前端，使其画出线路，并且标注出站点
-public class DeleteStationServlet extends HttpServlet {
-
+//更改该线路的status为"4"
+public class DeleteStationServlet
+//        extends HttpServlet
+{
     public static void main(String[] args) {
         Gson gson=new Gson();
         StationService stationService = new StationService();
         LineService lineService = new LineService();
-        String coord = null;
-        String stops = null;
 
-        String str = "{\"lineID\":\"20190506-151115\",\"name\":\"翔方公路胜辛南路\",\"sequence\":\"1\"}";
+        String str = "{\"lineID\":\"20190506-121927\",\"name\":\"园区路园汽路\",\"sequence\":\"1\"}";
         Stop stopJson = gson.fromJson(str,Stop.class);
         System.out.println(stopJson.getLineID()+" "+stopJson.getName() +" "+stopJson.getSequence());
 
@@ -45,14 +43,43 @@ public class DeleteStationServlet extends HttpServlet {
 
         //根据Json中的线路ID查询到线路的所有字段
         Line line = lineService.queryLineByID(stopJson.getLineID());
-        System.out.println(line.getCoord());
-        System.out.println(line.getStops());
 
+        //获得该线路中stops中包含的stop的具体信息
         Type type = new TypeToken<ArrayList<Stop>>(){}.getType();
         ArrayList<Stop> stopsList = gson.fromJson(line.getStops(),type);
+        int sequence = 0;//删除站点的序号
+        //System.out.println(station.getId()+"!!!");
         for(Stop stop: stopsList){
-            System.out.println(stop.getId()+" "+stop.getName()+" " +stop.getSequence());
+            //System.out.println(stop.getName()+" " +stop.getSequence()+" "+stop.getId());
+            if(stop.getId().equals(station.getId())){
+                sequence = Integer.parseInt(stop.getSequence());
+                System.out.println("需要删除的站点序号是" + sequence +"   该线路总共站点个数为："+ stopsList.size());
+                break;
+            }
         }
+        //通过站点的ID找到线路stops中的定位，删除该段stops并修改其后的sequence等值
+        List<Stop> delStops = new ArrayList();
+        int index = sequence - 1;//需要删除站点的下标
+        if(index>=0 && index < stopsList.size()){
+            int j = 0;
+            for(int i=0;i<stopsList.size();i++){
+                if(i!= index){
+                    delStops.add(j,stopsList.get(i));
+                    delStops.get(j).setSequence(j+1+"");
+                    j++;
+                }
+            }
+        }else{
+            System.out.println("删除站点的顺序有误！！！");
+        }
+        if(index==0){//删除首站点
+
+        }else if(index == stopsList.size()-1){//删除尾站点
+
+        }else if(index > 0 && index< stopsList.size()-1){//删除中间站点
+
+        }
+
 
 //       //[[31.281874,121.310634],[31.28204,121.310549]]  ,   null
 //       //[{"id":"BV10028550","name":"南翔北火车站","location":[31.281874,121.310634],"sequence":"1"},{"id":"BV10029452","name":"银翔路星华路","location":[31.283224,121.31189],"sequence":"2"}]   ,  null

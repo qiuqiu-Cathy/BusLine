@@ -18,52 +18,6 @@ public class StationValidDao {
     private static final String USERNAME = "busRoot";
     private static final String PWD = "12345678";
 
-//    public  ArrayList<String> queryAllValidStation() { //模型层：用于处理查询站点在覆盖率 （用于查询数据库）显示有效的站点
-//        ArrayList<String> stations = new ArrayList<String>();
-//       // String station = null;
-//        PreparedStatement pstmt = null;
-//        Connection connection = null;
-//        ResultSet rs = null;
-//        try {
-//            //a.导入驱动，加载具体驱动类
-//            Class.forName("com.mysql.jdbc.Driver");
-//            //b.与数据库建立连接
-//            connection = DriverManager.getConnection(URL, USERNAME, PWD);
-//            //c.发送sql,执行(查)
-//            String sql = "select location from station where status = 1 ";
-//            pstmt = connection.prepareStatement(sql);
-//            rs = pstmt.executeQuery();//返回值表示增删改几条数据
-//            //d.处理结果
-//            while (rs.next()) {
-//                String station = rs.getString("location");
-//                stations.add(station);
-//            }
-//            return stations;
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//            return null;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return null;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        } finally {
-//            try {
-//                if (rs != null)
-//                    rs.close();
-//                if (pstmt != null)
-//                    pstmt.close();
-//                if (connection != null)
-//                    connection.close();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//                return null;
-//            }
-//        }
-//    }
-
-
     public  List<Station> queryAllValidStation() { //模型层：用于处理查询站点在覆盖率 （用于查询数据库）显示有效的站点
         List<Station> stations = new ArrayList<Station>();
         Station station = null;

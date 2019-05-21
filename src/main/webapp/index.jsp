@@ -1811,68 +1811,82 @@
             document.getElementById('correctLine').style.display='block';
             document.getElementById('form').style.display='none';
             document.getElementById('correct').style.display='none';
+            finishList();
+            correctingList();
         }
 
         //修改线路-删除站点
         function deleteStation(){
             var $correctLineID = $("#correctLineID").val();
+            var $correctingLineID = $("#correctingLineID").val();
+            var lineID = "";
             var $correctStationName = $("#correctStationName").val();
             var $correctSequence = $("#correctSequence").val();
+            if($correctLineID != "" && $correctingLineID == "" ){
+                lineID = $correctLineID;
+            }else if($correctLineID == "" && $correctingLineID != ""){
+                lineID = $correctingLineID;
+            }else if($correctLineID == "" && $correctingLineID == ""){
+                alert("请从一个下拉框中选择想要修改的线路")
+            }else if($correctLineID != "" && $correctingLineID != ""){
+                alert("只能从一个下拉框中选择想要修改的线路！！")
+            }
+            if(lineID!="") {
+                var obj = JSON.stringify({
+                    'lineID': $correctLineID,
+                    'name': $correctStationName,
+                    'sequence': $correctSequence
+                });
+                console.log(obj)
+                $.ajax({
+                    url: "DeleteStationServlet",
+                    //参考AddOldStopToLineServlet
+                    type: "post",
+                    data: "obj=" + obj,
+                    dataType: "json",
+                    success: function (result, testStatus) {
+                        var lineData = eval(result);//Object形式
+                        console.log(lineData)
+                        var line = JSON.parse(lineData.coordinates) //字符串转对象
+                        console.log(line)
+                        var style = {//查询线路展示的风格
+                            "color": "#ff0000",
+                            "weight": 2,
+                            "opacity": 0.55
+                        };
+                        var queryLayer = L.geoJSON().addTo(correctLineMap);
+                        queryLayer.addData([line]);
+                        L.geoJSON([line], {
+                            style: style
+                        }).addTo(correctLineMap);
 
-            var obj = JSON.stringify({
-                'lineID':$correctLineID,
-                'name': $correctStationName,
-                'sequence': $correctSequence
-            });
-            console.log(obj)
-            $.ajax({
-                url: "DeleteStationServlet",
-                //参考AddOldStopToLineServlet
-                type: "post",
-                data: "obj="+ obj,
-                dataType: "json",
-                success:function (result,testStatus) {
-                    var lineData = eval(result) ;//Object形式
-                    console.log(lineData)
-                    var line = JSON.parse(lineData.coordinates) //字符串转对象
-                    console.log(line)
-                    var style = {//查询线路展示的风格
-                        "color": "#ff0000",
-                        "weight": 2,
-                        "opacity": 0.55
-                    };
-                    var queryLayer = L.geoJSON().addTo(correctLineMap);
-                    queryLayer.addData([line]);
-                    L.geoJSON([line], {
-                        style: style
-                    }).addTo(correctLineMap);
+                        //显示站点
+                        var stops = JSON.parse(lineData.stops)
+                        console.log(stops)
+                        var len = stops.length;
+                        console.log(len)
+                        for (var j = 0; j < len; j++) {
+                            var stopLocation = stops[j].location;
+                            var stationId = stops[j].id
+                            var stationName = stops[j].name
+                            var stationLoc = stops[j].location
+                            var stationSequence = stops[j].sequence
+                            var marker = L.marker(stopLocation)
+                                .addTo(correctLineMap)
+                                .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
+                                .openPopup();
+                            //console.log(stationName)
+                        }
+                        alert("原有站点添加成功！线路已保存为在建状态")
 
-                    //显示站点
-                    var stops= JSON.parse(lineData.stops)
-                    console.log(stops)
-                    var len = stops.length;
-                    console.log(len)
-                    for(var j=0;j<len;j++) {
-                        var stopLocation = stops[j].location;
-                        var stationId = stops[j].id
-                        var stationName = stops[j].name
-                        var stationLoc = stops[j].location
-                        var stationSequence = stops[j].sequence
-                        var marker = L.marker(stopLocation)
-                            .addTo(correctLineMap)
-                            .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
-                            .openPopup();
-                        //console.log(stationName)
+                        //跳转至修改线路展示层
+                        $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
+                    },
+                    error: function (xhr, errorMessage, e) {
+                        alert("系统异常！！")
                     }
-                    alert("原有站点添加成功！线路已保存为在建状态")
-
-                    //跳转至修改线路展示层
-                    $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
-                },
-                error:function(xhr,errorMessage,e){
-                    alert("系统异常！！")
-                }
-            })
+                })
+            }
         }
 
         //修改线路-保存该拐点

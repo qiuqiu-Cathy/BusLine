@@ -43,7 +43,7 @@ public class AddCoord2Servlet extends HttpServlet {
         System.out.println("线路名："+ coordJson.getLineName()+" 插入拐点坐标："+coordJson.getLoc()+" 插入该顺序站点之后"+coordJson.getSequence()+"实际"+ sequence);
         List<Double> addCoordLoc = gson.fromJson("["+ coordJson.getLoc()+"]",ArrayList.class);
         //根据修改线路的名字获取线路目前的所有字段
-        
+
         List<List<Double>> coords = gson.fromJson(line.getCoord(), ArrayList.class);
         List<Stop> stopsJson = gson.fromJson(line.getStops(),ArrayList.class);
         String addCoordBerforeStop = stopsJson.get(sequence)+"";
@@ -63,7 +63,7 @@ public class AddCoord2Servlet extends HttpServlet {
         coords.add(coordNum,addCoordLoc); //前端传入 插入第一个站点之后，coordNum则取第二个站点的位置，coord取代该位置插入
         //根据lineName更新数据库line的coord并返回全新的coord及站点信息使前端显示
         String coordsJson = gson.toJson(coords);
-        if(lineService.updateCoordsByLineName(coordJson.getLineName(),coordsJson)){
+        if(lineService.updateCoordsByLineName(coordJson.getLineName(),coordsJson) && lineService.correctStatus(coordJson.getLineID(),"4")){
             Line lineInfo = lineService.queryLineByNameAll(coordJson.getLineName());
             Coordinates c = changeIntoCoord(lineInfo.getCoord());
             Line lineData = new Line(lineInfo.getId(),lineInfo.getLineName(),c,lineInfo.getStops());
