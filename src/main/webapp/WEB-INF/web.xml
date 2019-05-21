@@ -202,4 +202,26 @@
       <servlet-name>AddCoordServlet </servlet-name>
       <url-pattern>/AddCoordServlet </url-pattern>
     </servlet-mapping>
+
+    <servlet>
+      <description></description>
+      <display-name>AddCoord2Servlet</display-name>
+      <servlet-name>AddCoord2Servlet </servlet-name>
+      <servlet-class>com.qiu.shu.busline.action.AddCoord2Servlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>AddCoord2Servlet </servlet-name>
+      <url-pattern>/AddCoord2Servlet </url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+      <description></description>
+      <display-name>QueryCorrectingLineServlet</display-name>
+      <servlet-name>QueryCorrectingLineServlet </servlet-name>
+      <servlet-class>com.qiu.shu.busline.action.QueryCorrectingLineServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>QueryCorrectingLineServlet </servlet-name>
+      <url-pattern>/QueryCorrectingLineServlet </url-pattern>
+    </servlet-mapping>
 </web-app>

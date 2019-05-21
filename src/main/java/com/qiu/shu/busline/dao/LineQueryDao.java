@@ -257,6 +257,7 @@ public class LineQueryDao {
 
     //查询 通过线路id查询公交线路的所有信息，查看该公交线路是否有效，有效的话返回该公交线路的所有信息，否则返回null
     //更改！！将原先status从1改为1,2,3
+    //更改！！将原先status从1,2,3改为1,2,3,4,5
     public Line queryLineById(String lineId) {
         PreparedStatement pstmt = null;
         Connection connection = null;
@@ -265,7 +266,7 @@ public class LineQueryDao {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USERNAME, PWD);
-            String sql = "select * from line where id = ? and (status = 1 or status = 2 or status = 3) "; //aaa
+            String sql = "select * from line where id = ? and (status = 1 or status = 2 or status = 3 or status = 4 or status = 5) "; //aaa
             pstmt = connection.prepareStatement(sql);
             pstmt.setString(1, lineId);
             rs = pstmt.executeQuery();//返回值表示增删改几条数据
@@ -507,7 +508,7 @@ public class LineQueryDao {
         return 0;
     }
 
-    //改！！原先是status为1的所有有效线路，现在是status为1和3 包含了新建完毕的线路
+    //改！！原先是status为1的所有有效线路，现在是status为1和3和5 包含了新建完毕以及修改完毕的线路
     //查询 查询所有有效的公交线路的所有字段信息 status=1
     public static List<Line> queryAllValidLine() {
         List<Line> lines = new ArrayList<Line>();
@@ -516,15 +517,10 @@ public class LineQueryDao {
         Connection connection = null;
         ResultSet rs = null;
         try {
-            //a.导入驱动，加载具体驱动类
             Class.forName("com.mysql.jdbc.Driver");
-            //b.与数据库建立连接
             connection = DriverManager.getConnection(URL, USERNAME, PWD);
-            //c.发送sql,执行(查)
-            String sql = "select id,lineName,coord,stops from line where (status = 1 or status = 3)";
+            String sql = "select id,lineName,coord,stops from line where (status = 1 or status = 3 or status = 5)";
             pstmt = connection.prepareStatement(sql);
-            //pstmt.setString(1, "1");
-            //执行sql语句[查]
             rs = pstmt.executeQuery();//返回值表示增删改几条数据
             //d.处理结果
             while (rs.next()) {
@@ -579,6 +575,52 @@ public class LineQueryDao {
                 String coord = rs.getString("coord");
                 String stops = rs.getString("stops");
                 line = new Line(id,lineName,coord,stops,2);
+                lines.add(line);
+            }
+            return lines;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (pstmt != null)
+                    pstmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    //查询 查询所有正在修改的公交线路的所有字段信息 status=4
+    public static List<Line> queryCorrectingLine() {
+        List<Line> lines = new ArrayList<Line>();
+        Line line = null;
+        PreparedStatement pstmt = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, USERNAME, PWD);
+            String sql = "select id,lineName,coord,stops from line where status = 4 ";
+            pstmt = connection.prepareStatement(sql);
+            rs = pstmt.executeQuery();//返回值表示增删改几条数据
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String lineName = rs.getString("lineName");
+                String coord = rs.getString("coord");
+                String stops = rs.getString("stops");
+                line = new Line(id,lineName,coord,stops,4);
                 lines.add(line);
             }
             return lines;

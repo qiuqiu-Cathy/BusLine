@@ -10,8 +10,14 @@ import java.util.List;
 public class LineService {
     LineQueryDao lineQueryDao = new LineQueryDao();
 
+    //status = 1(在运营),3(新建完毕),5(修改完毕)
     public List<Line> queryAllValidLine(){
         return lineQueryDao.queryAllValidLine();
+    }
+
+    //status=4 正在修改的所有线路
+    public List<Line> queryCorrectingLine(){
+        return lineQueryDao.queryCorrectingLine();
     }
 
     //返回所有处于在建状态的线路列表

@@ -6,7 +6,6 @@ import com.qiu.shu.busline.domain.Line;
 import com.qiu.shu.busline.service.LineService;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,17 +16,15 @@ import java.util.List;
 
 import static com.qiu.shu.busline.Util.DealCoordUtil.changeIntoCoord;
 
-
-@WebServlet(name = "QueryAllLinesServlet")
-public class QueryAllLinesServlet extends HttpServlet {
+//查询status为4，即正在修改中的线路列表
+public class QueryCorrectingLineServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //查看所有有效线路
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=UTF-8");
 
         LineService service = new LineService();
-        List<Line> lines = service.queryAllValidLine();
+        List<Line> lines = service.queryCorrectingLine();
         Gson gson=new Gson();
         PrintWriter out = response.getWriter();
 
@@ -48,4 +45,3 @@ public class QueryAllLinesServlet extends HttpServlet {
     }
 
 }
-
