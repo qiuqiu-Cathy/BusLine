@@ -1945,7 +1945,7 @@
                         correct();
                         alert("拐点已添加至线路")
                         //跳转至在建线路展示层
-                        $("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
+                        $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
                     },
                     error: function (xhr, errorMessage, e) {
                         alert("系统异常！！")

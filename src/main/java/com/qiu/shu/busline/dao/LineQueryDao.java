@@ -2,7 +2,6 @@ package com.qiu.shu.busline.dao;
 
 import com.qiu.shu.busline.domain.Line;
 import com.qiu.shu.busline.domain.Stop;
-import org.apache.http.nio.reactor.ListenerEndpoint;
 
 import javax.print.DocFlavor;
 import java.sql.Connection;
@@ -76,7 +75,7 @@ public class LineQueryDao {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USERNAME, PWD);
-            String sql = "select * from line where lineName = ?  and (status = 1 or status = 2 or status = 3) ";
+            String sql = "select * from line where lineName = ?  and status in (1,2,3,4,5) ";
             pstmt = connection.prepareStatement(sql);
             String query = lineName;
             pstmt.setString(1,query );

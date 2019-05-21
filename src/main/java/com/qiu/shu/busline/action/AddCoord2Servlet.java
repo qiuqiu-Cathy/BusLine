@@ -33,7 +33,9 @@ public class AddCoord2Servlet extends HttpServlet {
         LineService lineService = new LineService();
 
         String obj = request.getParameter("obj");//从前端获取json
+        System.out.println(String.format("obj = %s",obj));
         Coord coordJson = gson.fromJson(obj, Coord.class);
+        System.out.println(String.format("coord = %s" , coordJson));
         Line line = lineService.queryLineByID(coordJson.getLineID());
         coordJson.setLineName(line.getLineName());
         System.out.println(coordJson.getLineName());
@@ -41,7 +43,7 @@ public class AddCoord2Servlet extends HttpServlet {
         System.out.println("线路名："+ coordJson.getLineName()+" 插入拐点坐标："+coordJson.getLoc()+" 插入该顺序站点之后"+coordJson.getSequence()+"实际"+ sequence);
         List<Double> addCoordLoc = gson.fromJson("["+ coordJson.getLoc()+"]",ArrayList.class);
         //根据修改线路的名字获取线路目前的所有字段
-
+        
         List<List<Double>> coords = gson.fromJson(line.getCoord(), ArrayList.class);
         List<Stop> stopsJson = gson.fromJson(line.getStops(),ArrayList.class);
         String addCoordBerforeStop = stopsJson.get(sequence)+"";

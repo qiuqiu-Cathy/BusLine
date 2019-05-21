@@ -2,7 +2,6 @@ package com.qiu.shu.busline.service;
 
 import com.qiu.shu.busline.dao.LineQueryDao;
 import com.qiu.shu.busline.domain.Line;
-import com.qiu.shu.busline.domain.Stop;
 
 import java.util.ArrayList;
 import java.util.List;
