@@ -142,7 +142,7 @@
 <div class = "wrap">
 	<div id='form' class = "content">
 
-        所有公交线路查询 :<input type="text" id="queryLineName"/>
+        公交线路查询<input type="text" id="queryLineName"/>
         <input type="button" value="线路查询" onclick="queryLine()"/>
         <input type="button" value="线路站点显示" onclick="queryLineOfStops()">
 
@@ -158,15 +158,8 @@
         <p><input type="button"  value="新建线路" onclick="newLine()"></p>
 
         <p><input type="button"  value="修改线路" onclick="correctLine()"></p>
-
-        <div class="layui-input-inline">
-            <button  class="layui-btn layui-btn-fluid" type="button" @click="LineOptimization"><i class="layui-icon">&#xe615;</i>线路优化</button>
-        </div>
-
-        <div class="layui-input-inline">
-            <button  class="layui-btn layui-btn-fluid" type="button" @click=""><i class="layui-icon">&#xe615;</i>优化前后对比</button>
-            <!--直接跳转到一个展示页面进行对比？  -->
-        </div>
+<%--        将status=3&&=5 的线路以下拉列表的形式，使其可以选中投入运营 线路状态改至1，包含站点的状态改至1--%>
+        <p><input type="button"  value="线路投入运营" onclick="correctLineStatus()"></p>
 	</div>
 
 <%--    删除线路弹出框div--%>
@@ -825,7 +818,7 @@
                 url:"LineQueryByNameServlet",
                 data:"lineName="+$continueAddLineName,
                 dataType:"json",
-                success:function (result,testStatus) {
+                success:function (result) {
                     var lineData = eval(result) ;//Object形式
                     console.log(lineData)
                     var line = JSON.parse(lineData.coordinates) //字符串转对象
@@ -1002,7 +995,7 @@
                 data:"obj="+ obj,
                 type: "post",
                 dataType:"json",
-                success:function (result,testStatus) {
+                success:function (result) {
                     var lineData = eval(result) ;//Object形式
                     var line = JSON.parse(lineData.coordinates) //字符串转对象
                     var style = {//查询线路展示的风格
@@ -1312,7 +1305,7 @@
                     type: "post",
                     data: "obj="+ obj,
                     dataType: "json",
-                    success:function (result,testStatus) {
+                    success:function (result) {
                         var lineData = eval(result) ;//Object形式
                         var line = JSON.parse(lineData.coordinates) //字符串转对象
                         var style = {//查询线路展示的风格
@@ -1352,7 +1345,7 @@
                         //跳转至在建线路展示层
                         $("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
                     },
-                    error:function(xhr,errorMessage,e){
+                    error:function(){
                         alert("系统异常！！")
                     }
                 })
@@ -1399,7 +1392,7 @@
                     type: "post",
                     data: "obj="+ obj,
                     dataType: "json",
-                    success:function (result,testStatus) {
+                    success:function (result) {
                         var lineData = eval(result) ;//Object形式
                         var line = JSON.parse(lineData.coordinates) //字符串转对象
                         var style = {//查询线路展示的风格
@@ -1407,8 +1400,6 @@
                             "weight": 2,
                             "opacity": 0.55
                         };
-                        // var queryLayer = L.geoJSON().addTo(underConstructionMap);
-                        // queryLayer.addData([line]);
                         if(global_add_line!=null){
                             underConstructionMap.removeLayer(global_add_line);
                         }
@@ -1815,7 +1806,7 @@
             correctingList();
         }
 
-        //修改线路-删除该站点 XXX
+        //修改线路-删除该站点
         function deleteStation(){
             var $correctLineID = $("#correctLineID").val();
             var $correctingLineID = $("#correctingLineID").val();
@@ -1973,65 +1964,70 @@
             }
         }
 
-        // //修改线路-添加该站点至线路
-        // function addStationToLine(){
-        //     var $correctLineID = $("#correctLineID").val();
-        //     var $correctingLineID = $("#correctingLineID").val();
-        //     var lineID = "";
-        //     if($correctLineID != "" && $correctingLineID == "" ){
-        //         lineID = $correctLineID;
-        //     }else if($correctLineID == "" && $correctingLineID != ""){
-        //         lineID = $correctingLineID;
-        //     }else if($correctLineID == "" && $correctingLineID == ""){
-        //         alert("请从一个下拉框中选择想要修改的线路")
-        //     }else if($correctLineID != "" && $correctingLineID != ""){
-        //         alert("只能从一个下拉框中选择想要修改的线路！！")
-        //     }
-        //     var oldChecked = $('#oldStop').is(":checked");
-        //     var newChecked = $('#newStop').is(":checked");
-        //     var $stationName = $("#correctStationName").val();
-        //     var $stationLocation = $("#correctStationLocation").val();
-        //     var $sequence = $("#correctSequence").val();
-        //     if()
-        //     if(lineID!="") {
-        //         if(oldChecked && (!newChecked)) { //如果选择的是原有站点
-        //             var obj = JSON.stringify({
-        //                 'type': "oldStop",
-        //                 'lineID': lineID,
-        //                 'name': $stationName,
-        //                 'loc': $stationLocation,
-        //                 'sequence': $sequence
-        //             });
-        //         }
-        //     }
-        // }
+        //修改线路-添加该站点至线路XXX
+        function addStationToLine(){
+            var $correctLineID = $("#correctLineID").val();
+            var $correctingLineID = $("#correctingLineID").val();
+            var lineID = "";
+            if($correctLineID != "" && $correctingLineID == "" ){
+                lineID = $correctLineID;
+            }else if($correctLineID == "" && $correctingLineID != ""){
+                lineID = $correctingLineID;
+            }else if($correctLineID == "" && $correctingLineID == ""){
+                alert("请从一个下拉框中选择想要修改的线路")
+            }else if($correctLineID != "" && $correctingLineID != ""){
+                alert("只能从一个下拉框中选择想要修改的线路！！")
+            }
+            var oldChecked = $('#oldStop').is(":checked");
+            var newChecked = $('#newStop').is(":checked");
+            var $stationName = $("#correctStationName").val();
+            var $stationLocation = $("#correctStationLocation").val();
+            var $sequence = $("#correctSequence").val();
+            //if()
+            if(lineID!="") {
+                if(oldChecked && (!newChecked)) { //如果选择的是原有站点
+                    var obj = JSON.stringify({
+                        'type': "oldStop",
+                        'lineID': lineID,
+                        'name': $stationName,
+                        'loc': $stationLocation,
+                        'sequence': $sequence
+                    });
+                }
+            }
+        }
 
     </script>
 
 <%--    控制删除线路的弹出框等--%>
     <script type="text/javascript">
+        var global_delete_line = null;
+        var global_delete_markers = [];
         //删除线路 按钮的界面显示
         function deleteLine() {
             document.getElementById('deleteLine').style.display='block';
             document.getElementById('form').style.display='none';
+            deleteList();
         }
         //删除公交查询的下拉列表
-        $(function() {
-            $.ajax({
-                type: 'post',
-                url: "QueryAllLinesServlet",
-                dataType: "json",
-                //data: {pid: 0},
-                success: function (data) {
-                    // console.log(data);
-                    $("#deleteID").empty();
-                    $("#deleteID").append("<option value=''>请选择需要删除的公交线路</option>");
-                    for (var i = 0; i < data.length; i++) {
-                        $("#deleteID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
+        function deleteList() {
+            $(function () {
+                $.ajax({
+                    type: 'post',
+                    url: "QueryAllLinesServlet",
+                    dataType: "json",
+                    //data: {pid: 0},
+                    success: function (data) {
+                        // console.log(data);
+                        $("#deleteID").empty();
+                        $("#deleteID").append("<option value=''>请选择需要删除的公交线路</option>");
+                        for (var i = 0; i < data.length; i++) {
+                            $("#deleteID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
+                        }
                     }
-                }
-            });
-        })
+                });
+            })
+        }
 
         //删除该线路 -查看该线路及站点
         function queryLineByID() {
@@ -2042,41 +2038,42 @@
                 dataType:"json",
                 success:function (result,testStatus) {
                     var lineData = eval(result) ;//Object形式
-                    console.log(lineData)
                     var line = JSON.parse(lineData.coordinates) //字符串转对象
-                    console.log(line)
                     var style = {//查询线路展示的风格
                         "color": "#ff0000",
                         "weight": 2,
                         "opacity": 0.55
                     };
-                    var queryLayer = L.geoJSON().addTo(queryLineMap);
-                    queryLayer.addData([line]);
-                    L.geoJSON([line], {
+                    if(global_delete_line!=null){
+                        queryLineMap.removeLayer(global_delete_line);
+                    }
+                    global_delete_line = L.geoJSON([line], {
                         style: style
                     }).addTo(queryLineMap);
-
                     //显示站点
                     var stops= JSON.parse(lineData.stops)
-                    console.log(stops)
                     var len = stops.length;
-                    console.log(len)
+                    if(global_delete_markers.length>0){
+                        for(var i=0;i<global_delete_markers.length;i++){
+                            queryLineMap.removeLayer(global_delete_markers[i]);
+                        }
+                        global_delete_markers = [];
+                    }
                     for(var j=0;j<len;j++) {
                         var stopLocation = stops[j].location;
                         var stationId = stops[j].id
                         var stationName = stops[j].name
                         var stationLoc = stops[j].location
                         var stationSequence = stops[j].sequence
-                        var marker = L.marker(stopLocation)
+                        global_delete_markers[j] = L.marker(stopLocation)
                             .addTo(queryLineMap)
                             .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
                             .openPopup();
-                        //console.log(stationName)
                     }
                     //跳转至线路查询层
                     $("div.leaflet-control-layers-base").children().eq(1).children().eq(0).children().eq(0).click()
                 },
-                error:function(xhr,errorMessage,e){
+                error:function(){
                     alert("系统异常！！")
                 }
             })
@@ -2089,17 +2086,26 @@
                 url:"DeleteLineByIdServlet",
                 data:"id="+$deleteID,
                 dataType:"json",
-                success:function (result,testStatus) {
-                    console.log(result)
+                success:function (result) {
                     if(result=="1"){
                         alert("该线路删除成功！！")
+                        deleteList();
+                        if(global_delete_line!=null){
+                            queryLineMap.removeLayer(global_delete_line);
+                        }
+                        if(global_delete_markers.length > 0){
+                            for(var i = 0;i<global_delete_markers.length;i++){
+                                queryLineMap.removeLayer(global_delete_markers[i])
+                            }
+                            global_delete_markers = [];
+                        }
                     }else if(result=="0"){
                         alert("该线路删除失败")
                     }
                     //跳转至线路查询层
                     $("div.leaflet-control-layers-base").children().eq(1).children().eq(0).children().eq(0).click()
                 },
-                error:function(xhr,errorMessage,e){
+                error:function(){
                     alert("系统异常！！")
                 }
             })
