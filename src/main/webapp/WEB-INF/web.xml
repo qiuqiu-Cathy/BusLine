@@ -225,4 +225,15 @@
       <url-pattern>/QueryCorrectingLineServlet </url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <description></description>
+        <display-name>AddStopToLine</display-name>
+        <servlet-name>AddStopToLine </servlet-name>
+        <servlet-class>com.qiu.shu.busline.action.AddStopToLine</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddStopToLine </servlet-name>
+        <url-pattern>/AddStopToLine </url-pattern>
+    </servlet-mapping>
+
 </web-app>

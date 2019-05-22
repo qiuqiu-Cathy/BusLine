@@ -1815,7 +1815,7 @@
             correctingList();
         }
 
-        //修改线路-删除该站点
+        //修改线路-删除该站点 XXX
         function deleteStation(){
             var $correctLineID = $("#correctLineID").val();
             var $correctingLineID = $("#correctingLineID").val();
@@ -1840,8 +1840,8 @@
                 console.log(obj);
                 $.ajax({
                     url: "DeleteStationServlet",
-                    data: "obj=" + obj,
-                    type: "post",
+                    type: "POST",
+                    data: "obj=" + obj,   // http content type
                     dataType: "json",
                     success: function (result, testStatus) {
                         var lineData = eval(result);//Object形式
@@ -1972,6 +1972,39 @@
                 })
             }
         }
+
+        // //修改线路-添加该站点至线路
+        // function addStationToLine(){
+        //     var $correctLineID = $("#correctLineID").val();
+        //     var $correctingLineID = $("#correctingLineID").val();
+        //     var lineID = "";
+        //     if($correctLineID != "" && $correctingLineID == "" ){
+        //         lineID = $correctLineID;
+        //     }else if($correctLineID == "" && $correctingLineID != ""){
+        //         lineID = $correctingLineID;
+        //     }else if($correctLineID == "" && $correctingLineID == ""){
+        //         alert("请从一个下拉框中选择想要修改的线路")
+        //     }else if($correctLineID != "" && $correctingLineID != ""){
+        //         alert("只能从一个下拉框中选择想要修改的线路！！")
+        //     }
+        //     var oldChecked = $('#oldStop').is(":checked");
+        //     var newChecked = $('#newStop').is(":checked");
+        //     var $stationName = $("#correctStationName").val();
+        //     var $stationLocation = $("#correctStationLocation").val();
+        //     var $sequence = $("#correctSequence").val();
+        //     if()
+        //     if(lineID!="") {
+        //         if(oldChecked && (!newChecked)) { //如果选择的是原有站点
+        //             var obj = JSON.stringify({
+        //                 'type': "oldStop",
+        //                 'lineID': lineID,
+        //                 'name': $stationName,
+        //                 'loc': $stationLocation,
+        //                 'sequence': $sequence
+        //             });
+        //         }
+        //     }
+        // }
 
     </script>
 

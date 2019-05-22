@@ -32,7 +32,8 @@ import static com.qiu.shu.busline.Util.DealCoordUtil.changeIntoCoord;
 //将更新后的line的coord和stops打包成Json传递给前端，使其画出线路，并且标注出站点
 //更改该线路的status为"4"
 public class DeleteStationServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=UTF-8");
@@ -41,6 +42,7 @@ public class DeleteStationServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         StationService stationService = new StationService();
         LineService lineService = new LineService();
+
 
         System.out.println("1");
         String obj = request.getParameter("obj");//从前端获取json
@@ -121,6 +123,11 @@ public class DeleteStationServlet extends HttpServlet {
             System.out.println("删除站点的顺序有误！！！");
         }
         out.close();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
     }
 }
 
