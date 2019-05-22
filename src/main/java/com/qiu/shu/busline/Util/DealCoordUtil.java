@@ -3,6 +3,7 @@ package com.qiu.shu.busline.Util;
 //import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.qiu.shu.busline.domain.Coordinates;
+import com.qiu.shu.busline.domain.Stop;
 //import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,60 @@ public class DealCoordUtil {
         return gson.toJson(coord);
     }
 
-	 
+    //根据站点的Location，返回其在所在线路的coords中的下标
+    public static int returnCoordNumByStop(List<List<Double>> coords, Stop stop){
+	 	if(stop!=null) {
+			String x = stop.getLocation().get(0) + "";
+			String y = stop.getLocation().get(1) + "";
+			for (int i = 0; i < coords.size(); i++) {
+				String cx = coords.get(i).get(0) + "";
+				String cy = coords.get(i).get(1) + "";
+				if (cx.equals(x) && cy.equals(y)) {
+					return i;
+				}
+			}
+			return -1;//表明未在coords中找到该站点的序号
+		}else{
+	 		return -2;//表明输入的站点为空
+		}
+	}
+
+	public static List<List<Double>> delFirstStopFromCoords(List<List<Double>> coords,int nextStopIndex){//index默认为0
+	 	List<List<Double>> ans = new ArrayList<List<Double>>();
+	 	int j = 0;
+	 	for (int i=0;i<coords.size();i++){
+	 		if(i!=0 && i >= nextStopIndex){
+	 			ans.add(j,coords.get(i));
+				j++;
+			}
+		}
+	 	return ans;
+	}
+
+	public static List<List<Double>> delMidStopFromCoords(List<List<Double>> coords,int preStopIndex, int nextStopIndex){//index默认为0
+		List<List<Double>> ans = new ArrayList<List<Double>>();
+		int j = 0;
+		for (int i=0;i<coords.size();i++){
+			if(i<=preStopIndex || i>=nextStopIndex){
+				ans.add(j,coords.get(i));
+				j++;
+			}
+		}
+		return ans;
+	}
+
+	public static List<List<Double>> delLastStopFromCoords(List<List<Double>> coords,int preStopIndex){
+		List<List<Double>> ans = new ArrayList<List<Double>>();
+		int j = 0;
+		for (int i=0;i<coords.size();i++){
+			if(i <= preStopIndex){
+				ans.add(j,coords.get(i));
+				j++;
+			}
+		}
+		return ans;
+	}
+
 	 
 	 public static String revise(String str){ //去除字符串最外层的[ ]
 	 	return  str.substring(1,str.length()-1);

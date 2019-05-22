@@ -224,4 +224,5 @@
       <servlet-name>QueryCorrectingLineServlet </servlet-name>
       <url-pattern>/QueryCorrectingLineServlet </url-pattern>
     </servlet-mapping>
+
 </web-app>

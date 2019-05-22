@@ -39,6 +39,7 @@ public class LineService {
         return false ;
     }
 
+    //更新 通过线路ID来更新线路的status为3(新建完成)
     public  boolean updateLineStatusById(String ID){
         return lineQueryDao.updateLineStatusById(ID);
     }

@@ -33,9 +33,9 @@ public class AddCoord2Servlet extends HttpServlet {
         LineService lineService = new LineService();
 
         String obj = request.getParameter("obj");//从前端获取json
-        System.out.println(String.format("obj = %s",obj));
+        //System.out.println(String.format("obj = %s",obj));
         Coord coordJson = gson.fromJson(obj, Coord.class);
-        System.out.println(String.format("coord = %s" , coordJson));
+        //System.out.println(String.format("coord = %s" , coordJson));
         Line line = lineService.queryLineByID(coordJson.getLineID());
         coordJson.setLineName(line.getLineName());
         System.out.println(coordJson.getLineName());
