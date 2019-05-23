@@ -1,6 +1,5 @@
 package com.qiu.shu.busline.action;
 
-import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.qiu.shu.busline.Util.DealCoordUtil;
 import com.qiu.shu.busline.domain.Coordinates;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import static com.qiu.shu.busline.Util.DealCoordUtil.changeIntoCoord;
 

@@ -567,21 +567,14 @@
                 data:"queryLineName="+$queryLineName,
                 dataType:"json",
                 success:function (data) {
-                    console.log(data)
                     var stopsList = data;
-                    console.log(stopsList);
                     var num = stopsList.length;//有几条公交就有多少
-                    console.log(num)
                     for(var i=0;i<num;i++)
                     {
                         var stops= eval(stopsList[i])
-                        console.log(stops)
                         var len = stops.length;
-                        console.log(len)
                         for(var j=0;j<len;j++) {
                             var stopLocation = stops[j].location;
-                            //console.log("stopLoction：" + stopLocation)
-                            //arraydate[i].location alert的格式为array(2) stopLocation alert的格式为 x,y！！故需通过eval()进行转换
                             var stationId = stops[j].id
                             var stationName = stops[j].name
                             var stationLoc = stops[j].location
@@ -590,13 +583,12 @@
                                 .addTo(queryLineMap)
                                 .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
                                 .openPopup();
-                            //console.log(stationName)
                         }
                     }
                     //跳转至线路查询层
                     $("div.leaflet-control-layers-base").children().eq(1).children().eq(0).children().eq(0).click()
                 },
-                error:function(xhr,errorMessage,e){
+                error:function(){
                     alert("系统异常！！")
                 }
             })
@@ -608,14 +600,12 @@
 				url:"StationServlet",
 				dataType:"json",
 				success:function (data) {
-					//alert(data)
 					var arraydata = eval(data);
 					var i;
 					var len = arraydata.length;
 					for(i=0;i<len;i++)
 					{
 						var stopLocation = eval(arraydata[i].location);
-						//arraydate[i] alert的格式为[x,y] stopLocation alert的格式为 x,y！！故需通过eval()进行转换
 						L.circle(stopLocation, {
 							color: '#D1EEEE',
 							weight: 0,
@@ -627,12 +617,13 @@
 					//跳转至站点覆盖层
                     $("div.leaflet-control-layers-base").children().eq(2).children().eq(0).children().eq(0).click()
 				},
-				error:function(xhr,errorMessage,e){
+				error:function(){
 					alert("系统异常！！")
 				}
 			})
 		}
 
+        var global_show_markers =[];
 		//站点显示 按钮的实现
         function stopShow() {
             $.ajax({
@@ -641,13 +632,18 @@
                 success:function (data) {
                     var arraydata = eval(data);
                     var len = arraydata.length;
+                    if(global_show_markers.length>0){
+                        for(var i=0;i<global_show_markers.length;i++){
+                            stationMap.removeLayer(global_show_markers[i])
+                        }
+                        global_show_markers = [];
+                    }
                     for(var i=0;i<len;i++)
                     {
                         var stopLocation = eval(arraydata[i].location);
-                        //将所有有效站点展示在有效线路层
-                        var stationName=arraydata[i].stationName
-                        var stationLoc=arraydata[i].location
-                        var marker = L.marker(stopLocation)
+                        var stationName = arraydata[i].stationName
+                        var stationLoc = arraydata[i].location
+                        global_show_markers[i] = L.marker(stopLocation)
                             .addTo(stationMap)
                             .bindPopup(stationName+" "+stationLoc)
                             .openPopup();
@@ -656,7 +652,7 @@
                     //跳转至站点信息层
                     $("div.leaflet-control-layers-base").children().eq(3).children().eq(0).children().eq(0).click()
                 },
-                error:function(xhr,errorMessage,e){
+                error:function(){
                     alert("系统异常！！")
                 }
             })
@@ -672,15 +668,11 @@
                 success:function (data) {
                     var obj = eval(data);
                     var len = obj.length;
-                    var layers=[];
-                    layers.length=0;
                     for(var i=0;i<len;i++)
                     {
                         var neighbourLoc = obj[i].location;
-                        //console.log(neighbourLoc)  //"31.2131321,121.2112123"字符串形式
                         neighbourLoc = "[" + neighbourLoc + "]";
                         var loc = eval(neighbourLoc);
-                        //console.log("loc:"+loc)
                         if(obj[i].number==0){
                             L.circle(loc, {
                                 color: '#D1EEEE',
@@ -720,7 +712,7 @@
                     $("div.leaflet-control-layers-base").children().eq(4).children().eq(0).children().eq(0).click()
                     //alert("【绿色及蓝色】表示站点数小于等于两个！！【红色及橙色】表示站点数大于等于三个！！")
                 },
-                error:function(xhr,errorMessage,e){
+                error:function(){
                     alert("系统异常！！")
                 }
             })
@@ -1854,39 +1846,6 @@
             }
         }
 
-        //修改线路-查看线路拐点
-        // function getCoord() {
-        //     var $correctLineID = $("#correctLineID").val();
-        //     $.ajax({
-        //         url:"GetCoordByID",
-        //         data:"queryLineID="+$correctLineID,
-        //         dataType:"json",
-        //         success:function (data) {
-        //             console.log(data)
-        //             var arraydata = eval(data);
-        //             console.log(arraydata);
-        //             var len = arraydata.length;
-        //             for(var i=0;i<len;i++)
-        //             {
-        //                 var stopLoc = arraydata[i]; //array[2]  0: 31.238547 1: 121.3208
-        //                 //console.log(stopLoc)
-        //                 L.circle(stopLoc, {
-        //                     color: '#D1EEEE',
-        //                     weight: 0,
-        //                     fillColor: '#FF0000',
-        //                     radius: 10,
-        //                     fillOpacity: 1
-        //                 }).addTo(correctLineMap)
-        //             }
-        //             //跳转至修改线路展示层
-        //             $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
-        //         },
-        //         error:function(xhr,errorMessage,e){
-        //             alert("系统异常！！")
-        //         }
-        //     })
-        //
-        // }
 
         //修改线路-返回
         function correctLineBack() {
@@ -1907,6 +1866,7 @@
 
         //修改线路-开始修改-修改站点
         function startCorrect() {
+            stopShow();
             document.getElementById('startCorrect').style.display='block';
             document.getElementById('correctLine').style.display='none';
             document.getElementById('correct').style.display='none';
@@ -2099,8 +2059,11 @@
             var $stationName = $("#correctStationName").val();
             var $stationLocation = $("#correctStationLocation").val();
             var $sequence = $("#correctSequence").val();
-            //if()
-            if(lineID!="") {
+            if(oldChecked && newChecked){
+                alert("只能选择一种站点类型")
+            }else if(!oldChecked && !newChecked){
+                alert("请选择一种站点类型")
+            }else if(lineID!="") {
                 if(oldChecked && (!newChecked)) { //如果选择的是原有站点
                     var obj = JSON.stringify({
                         'type': "oldStop",
@@ -2110,6 +2073,69 @@
                         'sequence': $sequence
                     });
                 }
+                if(!oldChecked && newChecked){//如果选择的是新站点
+                    var obj = JSON.stringify({
+                        'type': "newStop",
+                        'lineID': lineID,
+                        'name': $stationName,
+                        'loc': $stationLocation,
+                        'sequence': $sequence
+                    });
+                }
+                console.log(obj);
+                $.ajax({
+                    url: "AddStopToLine",
+                    data: "obj=" + obj,
+                    type: "post",
+                    dataType: "json",
+                    success: function (result, testStatus) {
+                        var lineData = eval(result);//Object形式
+                        var line = JSON.parse(lineData.coordinates) //字符串转对象
+                        var style = {//查询线路展示的风格
+                            "color": "#ff0000",
+                            "weight": 2,
+                            "opacity": 0.55
+                        };
+                        if (global_correct_line != null) {//清空之前图层中所有的线路
+                            correctLineMap.removeLayer(global_correct_line)
+                        }
+                        global_correct_line = L.geoJSON([line], {style: style}).addTo(correctLineMap);
+
+                        //显示站点
+                        var stops = JSON.parse(lineData.stops)
+                        var len = stops.length;
+                        if (global_correct_markers.length > 0) {
+                            for (var i = 0; i < global_correct_markers.length; i++) {
+                                correctLineMap.removeLayer(global_correct_markers[i]);
+                            }
+                            global_correct_markers = [];
+                        }
+                        if (global_correct_coords.length > 0) {
+                            for (var i = 0; i < global_correct_coords.length; i++) {
+                                correctLineMap.removeLayer(global_correct_coords[i]);
+                            }
+                            global_correct_coords = [];
+                        }
+                        for (var j = 0; j < len; j++) {
+                            var stopLocation = stops[j].location;
+                            var stationId = stops[j].id
+                            var stationName = stops[j].name
+                            var stationLoc = stops[j].location
+                            var stationSequence = stops[j].sequence
+                            global_correct_markers[j] = L.marker(stopLocation)
+                                .addTo(correctLineMap)
+                                .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
+                                .openPopup();
+                        }
+                        correct();
+                        alert("站点已添加至线路")
+                        //跳转至在建线路展示层
+                        $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
+                    },
+                    error: function () {
+                        alert("修改线路-添加站点至线路系统异常！！")
+                    }
+                })
             }
         }
 

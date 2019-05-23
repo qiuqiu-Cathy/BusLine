@@ -1,7 +1,12 @@
 package com.qiu.shu.busline.service;
 
+import com.google.gson.Gson;
+import com.qiu.shu.busline.Util.DealStopUtil;
 import com.qiu.shu.busline.dao.LineQueryDao;
+import com.qiu.shu.busline.domain.Coord;
 import com.qiu.shu.busline.domain.Line;
+import com.qiu.shu.busline.domain.Station;
+import com.qiu.shu.busline.domain.Stop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,5 +83,70 @@ public class LineService {
 
     public boolean correctStatus(String lineID,String status){
         return  lineQueryDao.correctStatus(lineID,status);
+    }
+
+    //修改线路-添加站点至线路
+    public Line addStopToLine(Stop addStop){
+        LineService lineService = new LineService();
+        StationService stationService = new StationService();
+        Gson gson = new Gson();
+        Line resultLine = null;
+
+        Line line = lineService.queryLineByID(addStop.getLineID());//获取需要修改的公交线路信息
+        String originCoordJson = line.getCoord();
+        String originStopsJson = line.getStops();
+        List<List<Double>> originCoord = gson.fromJson(originCoordJson, ArrayList.class);
+        List<Stop> originStops = gson.fromJson(originStopsJson,ArrayList.class);
+        List<List<Double>> resultCoord = null;
+        List<Stop> resultStops = null;
+        Station addStation = null;
+
+        if(addStop.getType().equals("newStop")){
+            addStation = DealStopUtil.newStation(addStop);
+        }else{
+            addStation = stationService.queryStationByName(addStop.getName());
+        }
+        List<Double> addLoc = gson.fromJson(addStation.getLocation(),ArrayList.class);
+        Stop addThisStop = new Stop(addStation.getId(),addStation.getStationName(),addLoc,addStop.getSequence());
+
+        int seq = Integer.parseInt(addStop.getSequence());
+        if(seq==1){//修改站点为首站点
+            for(int i=0; i<originCoord.size()+1;i++){
+                if(i==0){
+                    resultCoord.add(0,addLoc);
+                }else{
+                    resultCoord.add(i,originCoord.get(i-1));
+                }
+            }
+            for (int i=0;i<originStops.size()+1;i++){
+                if(i==0){
+                    resultStops.add(0,addThisStop);
+                }else {
+                    resultStops.add(i,originStops.get(i-1));
+                }
+            }
+        }else if(seq==originStops.size()+1){//修改站点为尾站
+            for(int i=0;i<originCoord.size();i++){
+                resultCoord.add(i,originCoord.get(i));
+            }
+            resultCoord.add(originCoord.size()+1,addLoc);
+            for(int i=0;i<originStops.size();i++){
+                resultStops.add(i,originStops.get(i));
+            }
+            resultStops.add(originStops.size()+1,addThisStop);
+        }else if(seq>1 && seq<=originStops.size()){ //修改站点为中间站点
+
+        }
+        String resultCoordJson = gson.toJson(resultCoord);
+        String resultStopsJson = gson.toJson(resultStops);
+        if(lineService.updateLineByNameCoordStops(line.getLineName(),resultCoordJson,resultStopsJson)){
+            resultLine = lineService.queryLineByID(line.getId());
+        }
+
+        if(resultLine==null||resultCoord==null||resultStops==null){
+            System.out.println("添加站点至线路失败！！");
+        }
+        return resultLine;
+
     }
 }
