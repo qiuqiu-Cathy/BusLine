@@ -44,19 +44,16 @@ public class DeleteStationServlet extends HttpServlet {
         LineService lineService = new LineService();
 
 
-        System.out.println("1");
         String obj = request.getParameter("obj");//从前端获取json
-        System.out.println("2"+obj);
         Stop stopJson = gson.fromJson(obj, Stop.class);
-        System.out.println(stopJson.getLineID() + " " + stopJson.getName() + " " + stopJson.getSequence());
+        //System.out.println(stopJson.getLineID() + " " + stopJson.getName() + " " + stopJson.getSequence());
         //根据修改线路的名字获取线路目前的所有字段
         Station station = stationService.queryStationByName(stopJson.getName().trim());
-        System.out.println(station.getId() + " " + station.getStationName() + " " + station.getLocation());
+        //System.out.println(station.getId() + " " + station.getStationName() + " " + station.getLocation());
         //根据Json中的线路ID查询到线路的所有字段
         Line line = lineService.queryLineByID(stopJson.getLineID());
         //获得该线路中stops中包含的stop的具体信息
-        Type type = new TypeToken<ArrayList<Stop>>() {
-        }.getType();
+        Type type = new TypeToken<ArrayList<Stop>>() {}.getType();
         ArrayList<Stop> stopsList = gson.fromJson(line.getStops(), type);
         int sequence = 0;//用于保存删除站点的序号
         for (Stop stop : stopsList) {

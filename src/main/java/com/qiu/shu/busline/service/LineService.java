@@ -1,6 +1,8 @@
 package com.qiu.shu.busline.service;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.qiu.shu.busline.Util.DealCoordUtil;
 import com.qiu.shu.busline.Util.DealStopUtil;
 import com.qiu.shu.busline.dao.LineQueryDao;
 import com.qiu.shu.busline.domain.Coord;
@@ -8,6 +10,7 @@ import com.qiu.shu.busline.domain.Line;
 import com.qiu.shu.busline.domain.Station;
 import com.qiu.shu.busline.domain.Stop;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +90,7 @@ public class LineService {
 
     //修改线路-添加站点至线路
     public Line addStopToLine(Stop addStop){
+        //System.out.println("addStop"+addStop.getType()+" "+addStop.getLineID()+" "+addStop.getName()+" "+addStop.getLoc()+" "+addStop.getSequence());
         LineService lineService = new LineService();
         StationService stationService = new StationService();
         Gson gson = new Gson();
@@ -94,11 +98,17 @@ public class LineService {
 
         Line line = lineService.queryLineByID(addStop.getLineID());//获取需要修改的公交线路信息
         String originCoordJson = line.getCoord();
+        //System.out.println("原始coord："+originCoordJson);
         String originStopsJson = line.getStops();
-        List<List<Double>> originCoord = gson.fromJson(originCoordJson, ArrayList.class);
-        List<Stop> originStops = gson.fromJson(originStopsJson,ArrayList.class);
-        List<List<Double>> resultCoord = null;
-        List<Stop> resultStops = null;
+        //System.out.println("原始站点："+originStopsJson);
+        Type coordType = new TypeToken<List<List<Double>>>(){}.getType();
+        List<List<Double>> originCoord = gson.fromJson(originCoordJson, coordType);
+
+        Type stopType = new TypeToken<ArrayList<Stop>>() {}.getType();
+        ArrayList<Stop> originStops = gson.fromJson(line.getStops(), stopType);
+
+        List<List<Double>> resultCoord = new ArrayList<List<Double>>();
+        List<Stop> resultStops = new ArrayList<Stop>();
         Station addStation = null;
 
         if(addStop.getType().equals("newStop")){
@@ -106,11 +116,15 @@ public class LineService {
         }else{
             addStation = stationService.queryStationByName(addStop.getName());
         }
-        List<Double> addLoc = gson.fromJson(addStation.getLocation(),ArrayList.class);
+        Type locType = new TypeToken<List<Double>>() {}.getType();
+        List<Double> addLoc = gson.fromJson(addStation.getLocation(),locType);
+        //System.out.println("addLoc:"+addLoc);
         Stop addThisStop = new Stop(addStation.getId(),addStation.getStationName(),addLoc,addStop.getSequence());
-
+        //System.out.println("addThisStop:"+addThisStop.getId()+" "+addThisStop.getSequence());
         int seq = Integer.parseInt(addStop.getSequence());
+        //System.out.println("seq："+seq+"，originStop.size()："+originStops.size());
         if(seq==1){//修改站点为首站点
+            System.out.println("开始修改-添加首站点到线路");
             for(int i=0; i<originCoord.size()+1;i++){
                 if(i==0){
                     resultCoord.add(0,addLoc);
@@ -126,27 +140,77 @@ public class LineService {
                 }
             }
         }else if(seq==originStops.size()+1){//修改站点为尾站
+            System.out.println("开始修改-添加尾站点到线路");
+            //System.out.println("originCoordSize:"+originCoord.size()+"    "+originCoord.get(0)+"addLoc"+addLoc);
             for(int i=0;i<originCoord.size();i++){
+                //System.out.println("第"+i+"次添加coord");
                 resultCoord.add(i,originCoord.get(i));
+                //System.out.println("添加的coord为"+resultCoord.get(i));
             }
-            resultCoord.add(originCoord.size()+1,addLoc);
+            System.out.println("1::"+(originCoord.size()+1) + "   "+addLoc+"bug!!!在下方！！！！！");
+            int size = originCoord.size()+1;
+            resultCoord.add(size,addLoc);
+            System.out.println("resultCoord.size():"+resultCoord.size()+"   "+resultCoord.get(originCoord.size()+1));
+            System.out.println("Coord修改完毕开始修改stops");
+            System.out.println("originStops.size()"+originStops.size()+"  例如"+originStops.get(0));
             for(int i=0;i<originStops.size();i++){
                 resultStops.add(i,originStops.get(i));
+                System.out.println("i:"+i);
             }
             resultStops.add(originStops.size()+1,addThisStop);
+            System.out.println("resultStops.size():"+resultStops.size()+"   "+resultStops.get(originStops.size()+1));
         }else if(seq>1 && seq<=originStops.size()){ //修改站点为中间站点
-
+            System.out.println("开始修改-添加中间站点到线路");
+            int correctIndex = seq - 1;
+            System.out.println("correctIndex"+correctIndex);
+            Stop preStop = gson.fromJson(gson.toJson(originStops.get(correctIndex-1)),Stop.class);
+            //System.out.println(preStop.getId()+" "+preStop.getSequence());
+            Stop nextStop = originStops.get(correctIndex);
+            int preIndexInCoord = DealCoordUtil.returnCoordNumByStop(originCoord,preStop);
+            int nextIndexInCoord = DealCoordUtil.returnCoordNumByStop(originCoord,nextStop);
+            int j = 0;
+            System.out.println("preIndex"+ preIndexInCoord);
+            for(int i=0;i<originCoord.size();i++){
+                if(i< preIndexInCoord){
+                    System.out.println("i<pre:"+j+" "+originCoord.get(i));
+                    resultCoord.add(j,originCoord.get(i));
+                    j ++;
+                }else if(i==preIndexInCoord){
+                    System.out.println("i=pre:"+j);
+                    resultCoord.add(j,originCoord.get(i));
+                    resultCoord.add(j+1,addLoc);
+                    j = j+2;
+                }else if(i>=nextIndexInCoord){
+                    System.out.println("i>next:"+j);
+                    resultCoord.add(j,originCoord.get(i));
+                    j++;
+                }
+            }
+            for(int m=0;m<originStops.size()+1;m++){
+                if(m<correctIndex){
+                    resultStops.add(m,originStops.get(m));
+                }if(m==correctIndex){
+                    resultStops.add(m,addThisStop);
+                }if(m>correctIndex){
+                    resultStops.add(m,originStops.get(m-1));
+                }
+            }
         }
         String resultCoordJson = gson.toJson(resultCoord);
         String resultStopsJson = gson.toJson(resultStops);
         if(lineService.updateLineByNameCoordStops(line.getLineName(),resultCoordJson,resultStopsJson)){
+            System.out.println("线路更新成功");
             resultLine = lineService.queryLineByID(line.getId());
         }
-
-        if(resultLine==null||resultCoord==null||resultStops==null){
+        if(resultLine==null){
             System.out.println("添加站点至线路失败！！");
         }
+        if(resultCoord.size()==0){
+            System.out.println("获得resultCoord失败");
+        }
+        if(resultStops.size()==0){
+            System.out.println("获得resultStops失败");
+        }
         return resultLine;
-
     }
 }

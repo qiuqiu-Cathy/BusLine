@@ -647,7 +647,6 @@
                             .addTo(stationMap)
                             .bindPopup(stationName+" "+stationLoc)
                             .openPopup();
-                        console.log(stationName)
                     }
                     //跳转至站点信息层
                     $("div.leaflet-control-layers-base").children().eq(3).children().eq(0).children().eq(0).click()
@@ -1866,10 +1865,15 @@
 
         //修改线路-开始修改-修改站点
         function startCorrect() {
+            $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
             stopShow();
+            //跳转至修改层
+
             document.getElementById('startCorrect').style.display='block';
             document.getElementById('correctLine').style.display='none';
             document.getElementById('correct').style.display='none';
+            $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
+            alert("可在站点信息层查看所有有效站点！")
         }
 
         //修改线路-开始修改-返回 返回继续修改其他线路
@@ -2088,7 +2092,7 @@
                     data: "obj=" + obj,
                     type: "post",
                     dataType: "json",
-                    success: function (result, testStatus) {
+                    success: function (result) {
                         var lineData = eval(result);//Object形式
                         var line = JSON.parse(lineData.coordinates) //字符串转对象
                         var style = {//查询线路展示的风格

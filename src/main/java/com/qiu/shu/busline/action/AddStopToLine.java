@@ -23,28 +23,19 @@ import static com.qiu.shu.busline.Util.DealCoordUtil.changeIntoCoord;
 //添加原有站点或更新新站点以后，根据sequence对line进行更新
 //更改status为4
 //根据line的ID重新查询线路并反馈给前端页面
-//public class AddStopToLine extends HttpServlet {
-public class AddStopToLine {
-    public static void main(String[] args) {
-        Gson gson = new Gson();
-        LineService lineService = new LineService();
-        StationService stationService = new StationService();
+public class AddStopToLine extends HttpServlet {
+//public class AddStopToLine {
+//    public static void main(String[] args) {
+//        Gson gson = new Gson();
+//        LineService lineService = new LineService();
+//        StationService stationService = new StationService();
+//
+//        //String json = "{\"type\":\"newStop\",\"lineID\":\"20190506-121927\",\"name\":\"明二黄先生墓站\",\"loc\":\"31.325215, 121.213961\",\"sequence\":\"3\"}";
+//        String json = "{\"type\":\"oldStop\",\"lineID\":\"20190506-121927\",\"name\":\"东环路宝安公路(公交站)\",\"loc\":\"\",\"sequence\":\"4\"}";
+//        Stop stopObj = gson.fromJson(json,Stop.class);
+//        Line result = lineService.addStopToLine(stopObj);
+//    }
 
-        //String json = "{\"type\":\"newStop\",\"lineID\":\"20190506-121927\",\"name\":\"明二黄先生墓站\",\"loc\":\"31.325215, 121.213961\",\"sequence\":\"3\"}";
-        String json = "{\"type\":\"oldStop\",\"lineID\":\"20190506-121927\",\"name\":\"泰众路泰丰路(公交站)\",\"loc\":\"\",\"sequence\":\"9\"}";
-        Stop stopObj = gson.fromJson(json,Stop.class);
-        Line line = lineService.queryLineByID(stopObj.getLineID());
-        Station station = stationService.queryStationByName("安亭地铁站(公交站)");
-        String Loc = DealCoordUtil.revise(station.getLocation());
-        System.out.println(Loc);
-        //List<List<Double>> loc = gson.fromJson(line.getCoord(),ArrayList.class);
-        //List<Stop> loc = gson.fromJson(line.getStops(),ArrayList.class);
-        List<Double> loc = gson.fromJson(station.getLocation(),ArrayList.class);
-        System.out.println(loc.get(0)+" "+loc.get(1));
-
-
-        //System.out.println(addStation.getId()+addStation.getLocation());
-    }
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
@@ -58,7 +49,20 @@ public class AddStopToLine {
         String obj = request.getParameter("obj");//从前端获取json
         //{"type":"newStop","lineID":"20190506-121927","name":"明二黄先生墓站","loc":"31.325215, 121.213961","sequence":"3"}
         //{"type":"oldStop","lineID":"20190506-121927","name":"泰众路泰丰路(公交站)","loc":"","sequence":"9"}
-        System.out.println(obj);
+        //System.out.println(obj);
+        Stop stopObj = gson.fromJson(obj,Stop.class);
+       // System.out.println("stopObj:"+stopObj.getType()+" "+stopObj.getLineID());
+        Line lineInfo = lineService.addStopToLine(stopObj);
+        if(lineInfo!=null){
+            Coordinates c = changeIntoCoord(lineInfo.getCoord());
+            Line lineData = new Line(lineInfo.getId(),lineInfo.getLineName(),c,lineInfo.getStops());
+            String lineJson = gson.toJson(lineData);
+            System.out.println("修改线路-添加线路至站点得到的lineJson"+lineJson);
+            out.write(lineJson);
+        }else{
+            System.out.println("线路更新成功，但未根据线路ID找到线路的具体信息");
+        }
+        out.close();
     }
 
 
