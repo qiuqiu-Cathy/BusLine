@@ -2178,6 +2178,37 @@
             }
         }
 
+        //修改线路-完成修改
+        function  finishCorrect() {
+            var $correctLineID = $("#correctLineID").val();
+            var $correctingLineID = $("#correctingLineID").val();
+            var lineID = "";
+            if($correctLineID != "" && $correctingLineID == "" ){
+                lineID = $correctLineID;
+            }else if($correctLineID == "" && $correctingLineID != ""){
+                lineID = $correctingLineID;
+            }else if($correctLineID == "" && $correctingLineID == ""){
+                alert("请从一个下拉框中选择想要修改的线路")
+            }else if($correctLineID != "" && $correctingLineID != ""){
+                alert("只能从一个下拉框中选择想要修改的线路！！")
+            }
+            $.ajax({
+                url: "FinishCorrectServlet",
+                data: "lineID=" + lineID,
+                type: "post",
+                //dataType: "json",
+                success: function (result) {
+                    alert("线路状态更新成【修改完毕】")
+                    backToCorrectMore();
+                },
+                error: function () {
+                    alert("完成修改线路功能出现异常")
+                }
+            })
+
+
+        }
+
     </script>
 
 

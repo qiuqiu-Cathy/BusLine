@@ -236,4 +236,15 @@
         <url-pattern>/AddStopToLine </url-pattern>
     </servlet-mapping>
 
+  <servlet>
+    <description></description>
+    <display-name>FinishCorrectServlet</display-name>
+    <servlet-name>FinishCorrectServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.FinishCorrectServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FinishCorrectServlet </servlet-name>
+    <url-pattern>/FinishCorrectServlet </url-pattern>
+  </servlet-mapping>
+
 </web-app>

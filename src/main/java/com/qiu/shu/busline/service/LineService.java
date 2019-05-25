@@ -124,7 +124,7 @@ public class LineService {
         int seq = Integer.parseInt(addStop.getSequence());
         //System.out.println("seq："+seq+"，originStop.size()："+originStops.size());
         if(seq==1){//修改站点为首站点
-            System.out.println("开始修改-添加首站点到线路");
+            //System.out.println("开始修改-添加首站点到线路");
             for(int i=0; i<originCoord.size()+1;i++){
                 if(i==0){
                     resultCoord.add(0,addLoc);
@@ -141,7 +141,7 @@ public class LineService {
                 }
             }
         }else if(seq==originStops.size()+1){//修改站点为尾站
-            System.out.println("开始修改-添加尾站点到线路");
+            //System.out.println("开始修改-添加尾站点到线路");
             //System.out.println("originCoordSize:"+originCoord.size()+"    "+originCoord.get(0)+"addLoc"+addLoc);
             for(int i=0;i<originCoord.size();i++){
                 //System.out.println("第"+i+"次添加coord");
