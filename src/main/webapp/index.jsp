@@ -657,6 +657,38 @@
             })
         }
 
+        //显示所有有效站点-但不会跳转到站点信息层
+        function showStop() {
+            $.ajax({
+                url:"StationServlet",
+                dataType:"json",
+                success:function (data) {
+                    var arraydata = eval(data);
+                    var len = arraydata.length;
+                    if(global_show_markers.length>0){
+                        for(var i=0;i<global_show_markers.length;i++){
+                            stationMap.removeLayer(global_show_markers[i])
+                        }
+                        global_show_markers = [];
+                    }
+                    for(var i=0;i<len;i++)
+                    {
+                        var stopLocation = eval(arraydata[i].location);
+                        var stationName = arraydata[i].stationName
+                        var stationLoc = arraydata[i].location
+                        global_show_markers[i] = L.marker(stopLocation)
+                            .addTo(stationMap)
+                            .bindPopup(stationName+" "+stationLoc)
+                            .openPopup();
+                    }
+                },
+                error:function(){
+                    alert("有效站点信息显示异常！！")
+                }
+            })
+        }
+
+        var global_neigh_circle=[];
 		//查询x米内居民区附近拥有的站点数量覆盖率图
         function neighbourCoverageQuery() {
             var $measure = $("#measure").val();
@@ -667,13 +699,19 @@
                 success:function (data) {
                     var obj = eval(data);
                     var len = obj.length;
+                    if(global_neigh_circle.length>0){
+                        for(var i=0;i<global_neigh_circle.length;i++){
+                            neighbourCoverageMap.removeLayer(global_neigh_circle[i])
+                        }
+                        global_neigh_circle = [];
+                    }
                     for(var i=0;i<len;i++)
                     {
                         var neighbourLoc = obj[i].location;
                         neighbourLoc = "[" + neighbourLoc + "]";
                         var loc = eval(neighbourLoc);
                         if(obj[i].number==0){
-                            L.circle(loc, {
+                            global_neigh_circle[i] = L.circle(loc, {
                                 color: '#D1EEEE',
                                 weight: 0,
                                 fillColor: '#FF3030',
@@ -682,7 +720,7 @@
                             }).addTo(neighbourCoverageMap)
                         }
                         else if(obj[i].number<=2){
-                            L.circle(loc, {
+                            global_neigh_circle[i] = L.circle(loc, {
                                 color: '#D1EEEE',
                                 weight: 0,
                                 fillColor: '#FF3030',
@@ -690,7 +728,7 @@
                                 fillOpacity: 0.1
                             }).addTo(neighbourCoverageMap)
                         }else if(obj[i].number>=3 && obj[i].number<=5){
-                            L.circle(loc, {
+                            global_neigh_circle[i] = L.circle(loc, {
                                 color: '#D1EEEE',
                                 weight: 0,
                                 fillColor: '#FF3030',
@@ -698,7 +736,7 @@
                                 fillOpacity: 0.15
                             }).addTo(neighbourCoverageMap)
                         }else if(obj[i].number>5){
-                            L.circle(loc, {
+                            global_neigh_circle[i] = L.circle(loc, {
                                 color: '#D1EEEE',
                                 weight: 0,
                                 fillColor: '#FF3030',
@@ -1865,14 +1903,11 @@
 
         //修改线路-开始修改-修改站点
         function startCorrect() {
-            $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
-            stopShow();
+            showStop();
             //跳转至修改层
-
             document.getElementById('startCorrect').style.display='block';
             document.getElementById('correctLine').style.display='none';
             document.getElementById('correct').style.display='none';
-            $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
             alert("可在站点信息层查看所有有效站点！")
         }
 
@@ -2044,7 +2079,7 @@
             }
         }
 
-        //修改线路-添加该站点至线路XXX
+        //修改线路-添加该站点至线路
         function addStationToLine(){
             var $correctLineID = $("#correctLineID").val();
             var $correctingLineID = $("#correctingLineID").val();

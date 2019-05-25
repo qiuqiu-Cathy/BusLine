@@ -137,6 +137,7 @@ public class LineService {
                     resultStops.add(0,addThisStop);
                 }else {
                     resultStops.add(i,originStops.get(i-1));
+                    resultStops.get(i).setSequence(i+1+"");
                 }
             }
         }else if(seq==originStops.size()+1){//修改站点为尾站
@@ -147,41 +148,42 @@ public class LineService {
                 resultCoord.add(i,originCoord.get(i));
                 //System.out.println("添加的coord为"+resultCoord.get(i));
             }
-            System.out.println("1::"+(originCoord.size()+1) + "   "+addLoc+"bug!!!在下方！！！！！");
-            int size = originCoord.size()+1;
-            resultCoord.add(size,addLoc);
-            System.out.println("resultCoord.size():"+resultCoord.size()+"   "+resultCoord.get(originCoord.size()+1));
-            System.out.println("Coord修改完毕开始修改stops");
-            System.out.println("originStops.size()"+originStops.size()+"  例如"+originStops.get(0));
+            //System.out.println("1::"+(originCoord.size()+1) + "   "+addLoc+"bug!!!在下方！！！！！");
+            resultCoord.add(addLoc);
+            //System.out.println("resultCoord.size():"+resultCoord.size()+"   "+resultCoord.get(originCoord.size()));
+            //System.out.println("Coord修改完毕开始修改stops");
+            //System.out.println("originStops.size()"+originStops.size()+"  例如"+originStops.get(0));
             for(int i=0;i<originStops.size();i++){
                 resultStops.add(i,originStops.get(i));
-                System.out.println("i:"+i);
+                //System.out.println("i:"+i);
             }
-            resultStops.add(originStops.size()+1,addThisStop);
-            System.out.println("resultStops.size():"+resultStops.size()+"   "+resultStops.get(originStops.size()+1));
+            //System.out.println("resultStop添加原有站点完毕，开始添加末尾stops的信息：bug!!!");
+            //System.out.println(addThisStop.getId()+" "+addThisStop.getSequence()+"  "+addThisStop.getName());
+            resultStops.add(addThisStop);
+            //System.out.println("resultStops.size():"+resultStops.size()+"   "+resultStops.get(originStops.size()));
         }else if(seq>1 && seq<=originStops.size()){ //修改站点为中间站点
-            System.out.println("开始修改-添加中间站点到线路");
+            //System.out.println("开始修改-添加中间站点到线路");
             int correctIndex = seq - 1;
-            System.out.println("correctIndex"+correctIndex);
+            //System.out.println("correctIndex"+correctIndex);
             Stop preStop = gson.fromJson(gson.toJson(originStops.get(correctIndex-1)),Stop.class);
             //System.out.println(preStop.getId()+" "+preStop.getSequence());
             Stop nextStop = originStops.get(correctIndex);
             int preIndexInCoord = DealCoordUtil.returnCoordNumByStop(originCoord,preStop);
             int nextIndexInCoord = DealCoordUtil.returnCoordNumByStop(originCoord,nextStop);
             int j = 0;
-            System.out.println("preIndex"+ preIndexInCoord);
+            //System.out.println("preIndex"+ preIndexInCoord);
             for(int i=0;i<originCoord.size();i++){
                 if(i< preIndexInCoord){
-                    System.out.println("i<pre:"+j+" "+originCoord.get(i));
+                    //System.out.println("i<pre:"+j+" "+originCoord.get(i));
                     resultCoord.add(j,originCoord.get(i));
                     j ++;
                 }else if(i==preIndexInCoord){
-                    System.out.println("i=pre:"+j);
+                    //System.out.println("i=pre:"+j);
                     resultCoord.add(j,originCoord.get(i));
                     resultCoord.add(j+1,addLoc);
                     j = j+2;
                 }else if(i>=nextIndexInCoord){
-                    System.out.println("i>next:"+j);
+                    //System.out.println("i>next:"+j);
                     resultCoord.add(j,originCoord.get(i));
                     j++;
                 }
@@ -193,6 +195,7 @@ public class LineService {
                     resultStops.add(m,addThisStop);
                 }if(m>correctIndex){
                     resultStops.add(m,originStops.get(m-1));
+                    resultStops.get(m).setSequence(m+1+"");
                 }
             }
         }
