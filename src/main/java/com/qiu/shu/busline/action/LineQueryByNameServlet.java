@@ -32,7 +32,7 @@ public class LineQueryByNameServlet extends HttpServlet {
             Coordinates c = changeIntoCoord(line.getCoord());
             Line lineInfo = new Line(line.getId(),line.getLineName(),c,line.getStops());
             String lineJson = gson.toJson(lineInfo);
-            System.out.println(lineJson);
+            //System.out.println(lineJson);
             out.write(lineJson);
         }else{
             out.write("false");
