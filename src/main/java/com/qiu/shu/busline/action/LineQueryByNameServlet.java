@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import static com.qiu.shu.busline.Util.DealCoordUtil.changeIntoCoord;
 
 public class LineQueryByNameServlet extends HttpServlet {
-    //根据下拉框选择的线路ID对线路以及其站点进行展示
+    //根据下拉框选择的线路名字对线路以及其站点进行展示
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");

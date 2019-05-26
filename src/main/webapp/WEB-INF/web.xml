@@ -247,4 +247,15 @@
     <url-pattern>/FinishCorrectServlet </url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <description></description>
+    <display-name>QueryLineByStatusServlet</display-name>
+    <servlet-name>QueryLineByStatusServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.QueryLineByStatusServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryLineByStatusServlet </servlet-name>
+    <url-pattern>/QueryLineByStatusServlet </url-pattern>
+  </servlet-mapping>
+
 </web-app>

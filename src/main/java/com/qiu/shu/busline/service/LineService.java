@@ -22,6 +22,9 @@ public class LineService {
         return lineQueryDao.queryAllValidLine();
     }
 
+    public List<Line> queryLineByStatus(String status){
+        return lineQueryDao.queryLineByStatus(status);
+    }
     //status=4 正在修改的所有线路
     public List<Line> queryCorrectingLine(){
         return lineQueryDao.queryCorrectingLine();

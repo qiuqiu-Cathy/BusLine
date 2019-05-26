@@ -555,7 +555,7 @@ public class LineQueryDao {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USERNAME, PWD);
-            String sql = "select id,lineName,coord,stops from line where (status = 1 or status = 3 or status = 5)";
+            String sql = "select * from line where (status = 1 or status = 3 or status = 5)";
             pstmt = connection.prepareStatement(sql);
             rs = pstmt.executeQuery();//返回值表示增删改几条数据
             //d.处理结果
@@ -564,7 +564,56 @@ public class LineQueryDao {
                 String lineName = rs.getString("lineName");
                 String coord = rs.getString("coord");
                 String stops = rs.getString("stops");
-                line = new Line(id,lineName,coord,stops,1);
+                int status = rs.getInt("status");
+                line = new Line(id,lineName,coord,stops,status);
+                lines.add(line);
+            }
+            return lines;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (pstmt != null)
+                    pstmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //根据所给状态值反馈该状态下的所有公交线路
+    public static List<Line> queryLineByStatus(String s) {
+        int statusNum = Integer.parseInt(s);
+        List<Line> lines = new ArrayList<Line>();
+        Line line = null;
+        PreparedStatement pstmt = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, USERNAME, PWD);
+            String sql = "select id,lineName,coord,stops from line where status = ?";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, statusNum);
+            rs = pstmt.executeQuery();//返回值表示增删改几条数据
+            //d.处理结果
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String lineName = rs.getString("lineName");
+                String coord = rs.getString("coord");
+                String stops = rs.getString("stops");
+                line = new Line(id,lineName,coord,stops,statusNum);
                 lines.add(line);
             }
             return lines;
