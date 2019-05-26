@@ -258,4 +258,15 @@
     <url-pattern>/QueryLineByStatusServlet </url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <description></description>
+    <display-name>BusOnLineServlet</display-name>
+    <servlet-name>BusOnLineServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.BusOnLineServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BusOnLineServlet </servlet-name>
+    <url-pattern>/BusOnLineServlet </url-pattern>
+  </servlet-mapping>
+
 </web-app>

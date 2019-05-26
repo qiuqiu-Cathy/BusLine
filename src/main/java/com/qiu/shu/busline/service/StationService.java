@@ -23,6 +23,10 @@ public class StationService {
         return stationValidDao.queryStationByName(name);
     }
 
+    public boolean updateStatus(String stationID,int status){
+        return stationValidDao.updateStatus(stationID,status);
+    }
+
     public int newStationByNameUpdate(String stationName,String loc,String lineName){
         Line line = lineQueryDao.queryLineByNameAll(lineName);
         String busLines = "[{\"id\":\"" + line.getId() + "\",\"name\":\"" + line.getLineName() + "\"}]";

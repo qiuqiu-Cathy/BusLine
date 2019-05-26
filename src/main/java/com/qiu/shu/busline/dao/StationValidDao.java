@@ -162,7 +162,6 @@ public class StationValidDao {
 
     //新增，通过新增线路-输入新站点名，loc对站点进行新增
     public static int newStationByNameUpdate(String name, String loc,String busLines) { //绿环路春浓路 31.289421, 121.244366 1
-        //id ++;
         name = name.trim().replace("(公交站)","")+"(公交站)";
         loc = "[" + loc.replace(" ","") + "]";
         Date t =new Date();
@@ -203,5 +202,43 @@ public class StationValidDao {
             }
         }
         return 0;
+    }
+
+    //根据站点ID以及想要更改的站点状态的值，来对站点进行更改
+    public boolean updateStatus(String stationID, int s) {
+
+        PreparedStatement pstmt = null;
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, USERNAME, PWD);
+            String sql = "update station set `status`= ? where id = ? ";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, s);
+            pstmt.setString(2,stationID);
+            int count = pstmt.executeUpdate();//返回是否更新成功
+            if (count > 0)
+                return true;
+            else
+                return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (pstmt != null)
+                    pstmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

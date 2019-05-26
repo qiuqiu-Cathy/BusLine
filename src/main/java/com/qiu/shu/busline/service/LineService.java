@@ -78,6 +78,27 @@ public class LineService {
         return lineQueryDao.queryLineByNameAll(lineName);
     }
 
+    //通过完整线路ID 将线路status变为1；stops中所包含所有站点遍历一遍若是有status为2的站点重新设置为1
+    public Line busOnLine(String lineID){
+        Gson gson = new Gson();
+        StationService stationService = new StationService();
+
+        if(lineQueryDao.correctStatus(lineID,"1")){
+            Line line = lineQueryDao.queryLineById(lineID);
+            Type stopType = new TypeToken<ArrayList<Stop>>() {}.getType();
+            ArrayList<Stop> originStops = gson.fromJson(line.getStops(), stopType);
+            for(Stop stop:originStops){
+                Station station = stationService.queryStationByName(stop.getName());
+                if(station.getStatus()==2){
+                    stationService.updateStatus(station.getId(),1);
+                }
+            }
+            return line;
+        }else{
+            return null;
+        }
+    }
+
     public boolean updateLineByNameCoordStops(String lineName,String coord, String stops){
         return lineQueryDao.updateLineByNameCoordStops(lineName,coord,stops);
     }
