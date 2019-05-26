@@ -1076,6 +1076,13 @@
             }
         }
 
+        //线路投入运营-返回
+        function busOnLineBack() {
+            document.getElementById('correctLineStatus').style.display='none';
+            document.getElementById('form').style.display='block';
+            status1List();
+        }
+
 
 
 
@@ -2278,6 +2285,11 @@
             document.getElementById('startCorrect').style.display='block';
             document.getElementById('correctLine').style.display='none';
             document.getElementById('correct').style.display='none';
+            $("#correctStationName").val("");
+            $("#correctStationLocation").val("");
+            $("#correctSequence").val("");
+            $("#oldStop").prop('checked',false);
+            $("#newStop").prop('checked',false);
             alert("可在站点信息层查看所有有效站点！")
         }
 
@@ -2359,11 +2371,17 @@
                                 .openPopup();
                         }
                         correct();
-                        alert("站点已经删除")
+
                         //跳转至在建线路展示层
                         $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
+                        alert("站点已经删除")
+                        $("#correctStationName").val("");
+                        $("#correctStationLocation").val("");
+                        $("#correctSequence").val("");
+                        $("#oldStop").prop('checked',false);
+                        $("#newStop").prop('checked',false);
                     },
-                    error: function (xhr, errorMessage, e) {
+                    error: function () {
                         alert("系统异常！！")
                     }
                 })
@@ -2438,9 +2456,12 @@
                                 .openPopup();
                         }
                         correct();
-                        alert("拐点已添加至线路")
+
                         //跳转至在建线路展示层
                         $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
+                        alert("拐点已添加至线路")
+                        $("#correctCoordLoc").val("");
+                        $("#correct_Sequence").val("");
                     },
                     error: function (xhr, errorMessage, e) {
                         alert("系统异常！！")
@@ -2537,9 +2558,15 @@
                                 .openPopup();
                         }
                         correct();
-                        alert("站点已添加至线路")
+
                         //跳转至在建线路展示层
                         $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
+                        alert("站点已添加至线路")
+                        $("#correctStationName").val("");
+                        $("#correctStationLocation").val("");
+                        $("#correctSequence").val("");
+                        $("#oldStop").prop('checked',false);
+                        $("#newStop").prop('checked',false);
                     },
                     error: function () {
                         alert("修改线路-添加站点至线路系统异常！！")
@@ -2570,6 +2597,13 @@
                 success: function (result) {
                     alert("线路状态更新成【修改完毕】")
                     backToCorrectMore();
+                    $("#correctStationName").val("");
+                    $("#correctStationLocation").val("");
+                    $("#correctSequence").val("");
+                    $("#correctCoordLoc").val("");
+                    $("#correct_Sequence").val("");
+                    $("#oldStop").prop('checked',false);
+                    $("#newStop").prop('checked',false);
                 },
                 error: function () {
                     alert("完成修改线路功能出现异常")
