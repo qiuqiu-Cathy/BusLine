@@ -162,10 +162,12 @@
 
         <p><input type="button" value="所有有效站点显示" onclick="stopShow()"/></p>
 
-        <p><input type="button" value="站点覆盖率查询" onclick="stopCoverage()"/></p>
+        <p><input type="button" value="所有有效线路显示" onclick="lineShow()"/></p>
+
+        <p><input type="button" value="站点覆盖率展示" onclick="stopCoverage()"/></p>
 
         <p><input type="text" id ="measure" autocomplete="on"/>
-        <input type="button" value="米内居民区站点覆盖率查询" onclick="neighbourCoverageQuery()"></p>
+        <input type="button" value="米内居民区站点覆盖率展示" onclick="neighbourCoverageQuery()"></p>
 
         <p><input type="button" value="线路删除" onclick="deleteLine()"></p>
 
@@ -176,25 +178,25 @@
         <p><input type="button"  value="线路投入运营" onclick="correctLineStatus()"></p>
 	</div>
 
-<%--    XXXX--%>
+
 <%--    线路投入运营页面--%>
     <div id="correctLineStatus" title="线路投入运营" style="" >
         <div style="width:500px;height: 40px;">
             <h3>线路投入运营</h3>
             <form>
-                <label class="col-sm-2 control-label">新建完毕线路</label>
+                <label class="col-sm-2 control-label">待投入运营公交线路</label>
                 <div class="col-sm-4">
                     <select name="finishConstructLineID" id="finishConstructLineID" class="text input-large form-control">
-                        <option value="">新建完毕线路列表</option>
+                        <option value="">待投入运营公交线</option>
                     </select>
                 </div>
 
-                <label class="col-sm-2 control-label">修改完毕线路</label>
-                <div class="col-sm-4">
-                    <select name="finishCorrectLineID" id="finishCorrectLineID" class="text input-large form-control">
-                        <option value="">修改完毕线路列表</option>
-                    </select>
-                </div>
+<%--                <label class="col-sm-2 control-label">修改完毕线路</label>--%>
+<%--                <div class="col-sm-4">--%>
+<%--                    <select name="finishCorrectLineID" id="finishCorrectLineID" class="text input-large form-control">--%>
+<%--                        <option value="">修改完毕线路列表</option>--%>
+<%--                    </select>--%>
+<%--                </div>--%>
 
                 <p><input type="button" value="查看该线路走向及站点" onclick="getLineByIDtoShow()"></p>
 <%--                <p><input type="button" value="查看该线路走向及站点和拐点" onclick="getLineByID()"></p>--%>
@@ -226,7 +228,7 @@
     </div>
 
 
-<%--    新建线路所有弹出框div--%>
+<%--    新建线路所有弹出框div  bug--%>
     <div id="dealAddLineDiv">
         <%--        新建线路弹出框的div--%>
         <div id="addLine" title="新建线路"  style="" >
@@ -236,9 +238,9 @@
                     <p>新建的线路名：</p>
                     <p><input type="text" name = "newLineName" id="newLineName" /></p>
 <%--                    点击后直接显示线路添加界面--%>
-                    <p><input type="button" value="开始" onclick="startNew()">
+                    <p><input type="button" value="开始" onclick="startNew()"></p>
 <%--                        返回主页面--%>
-                        <input type="button" value="返回" onclick="addLineBack()"></p>
+
                     <label class="col-sm-2 control-label">在建线路 </label>
                     <div class="col-sm-4">
                         <select name="continueAddLineName" id="continueAddLineName" class="text input-large form-control">
@@ -246,6 +248,8 @@
                         </select>
 <%--                        显示线路添加界面及已添加的线路和站点信息显示--%>
                         <p><input type="button" value="继续" onclick="continueNew()"></p>
+
+                    <p><input type="button" value="返回" onclick="addLineBack()"></p>
 
                     </div>
                 </form>
@@ -311,6 +315,7 @@
 <%--                    根据checkbox的值选择添加原有站点还是新站点，返回添加站点的视图，保存添加的站点，刷新目前已添加的站点组成的线路--%>
                     <p><input type="button"  value="保存并继续添加" onclick="saveAndContinue()"></p>
                     <p><input type="button"  value="新建线路完成" onclick="saveAndEnd()"></p>
+                    <p><input type="button" value="返回" onclick="continueNew()"></p>
                 </form>
             </div>
         </div>
@@ -326,7 +331,7 @@
                     <p><input type="text" id="stopSequence"></p>
 <%--                    保存拐点至线路，跳转至开始添加页面，线路展示--%>
                     <p><input type="button"  value="保存该拐点" onclick="saveCoord()"></p>
-                    <p><input type="button"  value="返回" onclick="startNew()"></p>
+                    <p><input type="button"  value="返回" onclick="continueNew()"></p>
                 </form>
             </div>
         </div>
@@ -359,19 +364,19 @@
             <div style="width:500px;height: 40px;">
                 <h3>修改线路</h3>
                 <form>
-                    <label class="col-sm-2 control-label">现有及新建完毕线路</label>
+                    <label class="col-sm-2 control-label">可修改线路</label>
                     <div class="col-sm-4">
                         <select name="correctLineID" id="correctLineID" class="text input-large form-control">
                             <option value="">请选择需要修改的公交线路</option>
                         </select>
                     </div>
 
-                    <label class="col-sm-2 control-label">修改中的线路</label>
-                    <div class="col-sm-4">
-                        <select name="correctingLineID" id="correctingLineID" class="text input-large form-control">
-                            <option value="">修改中的公交线路</option>
-                        </select>
-                    </div>
+<%--                    <label class="col-sm-2 control-label">修改中的线路</label>--%>
+<%--                    <div class="col-sm-4">--%>
+<%--                        <select name="correctingLineID" id="correctingLineID" class="text input-large form-control">--%>
+<%--                            <option value="">修改中的公交线路</option>--%>
+<%--                        </select>--%>
+<%--                    </div>--%>
 
                     <p><input type="button" value="查看该线路走向及站点和拐点" onclick="getLineByID()"></p>
 
@@ -466,16 +471,18 @@
         neighbourCoverageMap = L.layerGroup([normalm]),
             underConstructionMap = L.layerGroup([normalm]),
             correctLineMap = L.layerGroup([normalm]),
+            normal2=L.layerGroup([normalm]),
         image = L.layerGroup([imgm, imga]);
 
 		var baseLayers = {
-			"有效线路展示": normal, //上面放置了所有有效的线路图展示
+			"有效线路展示1": normal, //首页上面放置了所有有效的线路图展示
             "线路查询层":queryLineMap,
 			"站点覆盖率展示":stationCoverageMap,
             "站点信息层":stationMap,
             "居民区站点覆盖率展示层":neighbourCoverageMap,
             "在建线路展示层":underConstructionMap,
             "修改线路展示层":correctLineMap,
+            "有效线路展示2":normal2,//有效线路查询层
 			"影像": image
 		}
 		var map = L.map("map", {
@@ -493,9 +500,17 @@
         L.control.scale().addTo(map);  //比例尺
 		L.control.attribution({ position: 'bottomleft', prefix: 'myMap' }).addTo(map); //添加地图名
 		map.on('click', showMapPosition);    //点击地图
-		function showMapPosition(e)
+		function showMapPosition(e)//eeee
 		{
 			alert(e.latlng);
+			console.log(e.latlng)
+            var s = e.latlng.lat.toString().substring(0,10) + "," + e.latlng.lng.toString().substring(0,10);
+            console.log(s);
+            $('#continueAddCoordLoc').val(s)
+            $('#addStationLocation').val(s)
+            $('#addCoordLoc').val(s)
+            $('#correctCoordLoc').val(s)
+            $('#correctStationLocation').val(s)
 		}
 
 		function addPoint(e)
@@ -506,9 +521,9 @@
 
 		//所有有效线路的显示风格
 		var myStyle = {
-			"color": "#ff0000",
+			"color": "#1E90FF",
 			"weight": 3,
-			"opacity": 0.15
+			"opacity": 0.85
 		};
         var styleClick = {
             "color": "#ff0000",
@@ -520,8 +535,8 @@
             for(Line line:linesResult){
         %>
             var myLines = eval(<%=line.getCoordinates()%>);
-            var myLayer = L.geoJSON().addTo(normal);
-            myLayer.addData(myLines);
+            <%--var myLayer = L.geoJSON().addTo(normal);--%>
+            <%--myLayer.addData(myLines);--%>
             var lines = L.geoJSON(myLines, {
                 style: myStyle
             }).addTo(normal);
@@ -557,6 +572,7 @@
                 success:function (result) {
                     var lineData = eval(result) ;//Object形式
                     var line = JSON.parse(lineData.coordinates) //字符串转对象
+                    console.log(line)
                     var style = {//查询线路展示的风格
                         "color": "#ff0000",
                         "weight": 2,
@@ -743,10 +759,17 @@
                         var stopLocation = eval(arraydata[i].location);
                         var stationName = arraydata[i].stationName
                         var stationLoc = arraydata[i].location
-                        global_show_markers[i] = L.marker(stopLocation)
-                            .addTo(stationMap)
-                            .bindPopup(stationName+" "+stationLoc)
-                            .openPopup();
+                        global_show_markers[i] = L.circle(stopLocation, {
+                            color: '#D1EEEE',
+                            weight: 0,
+                            fillColor: '#FF0000',
+                            radius: 50,
+                            fillOpacity: 1
+                        }).addTo(stationMap).bindPopup(stationName+" "+stationLoc).openPopup();
+                        // global_show_markers[i] = L.marker(stopLocation)
+                        //     .addTo(stationMap)
+                        //     .bindPopup(stationName+" "+stationLoc)
+                        //     .openPopup();
                     }
                     //跳转至站点信息层
                     $("div.leaflet-control-layers-base").children().eq(3).children().eq(0).children().eq(0).click()
@@ -756,6 +779,43 @@
                 }
             })
         }
+
+        var global_normal_lines = [];
+        var global_normal_markers = [];
+        //所有有效公交线路显示
+        function lineShow() {
+            $.ajax({
+                url: "AllValidLinesServlet",
+                dataType: "json",
+                success: function (result) {
+                    var linesData = eval(result);//Object形式
+                    console.log(linesData)
+                    var style = {//查询线路展示的风格
+                        "color": "#1E90FF",
+                        "weight": 3,
+                        "opacity": 0.85
+                    };
+                    if (global_normal_lines.length>0) {
+                        for(var i=0;i<global_normal_lines.length;i++){
+                            normal2.removeLayer(global_normal_lines[i]);
+                        }
+                    }
+                    for(var j=0;j<linesData.length;j++){
+                        var line = JSON.parse(linesData[j].coordinates); //字符串转对象
+                        //console.log(linesData[j].coordinates);
+                        global_normal_lines[j] = L.geoJSON([line], {
+                            style: myStyle
+                        }).addTo(normal2).bindPopup(linesData[j].lineName);
+                    }
+                    //跳转至有效线路展示层
+                    $("div.leaflet-control-layers-base").children().eq(7).children().eq(0).children().eq(0).click()
+                },
+                error: function () {
+                    alert("系统异常！！")
+                }
+            })
+        }
+
 
         //显示所有有效站点-但不会跳转到站点信息层
         function showStop() {
@@ -908,57 +968,72 @@
                     //data: {pid: 0},
                     success: function (data) {
                         $("#finishConstructLineID").empty();
-                        $("#finishConstructLineID").append("<option value=''>新建完成公交线路列表</option>");
+                        $("#finishConstructLineID").append("<option value=''>待投入运营公交线路列表</option>");
                         for (var i = 0; i < data.length; i++) {
                             $("#finishConstructLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
                         }
                     }
                 });
+                $(function () {
+                    $.ajax({
+                        type: 'post',
+                        url: "QueryLineByStatusServlet",
+                        data:"status="+"5",
+                        dataType: "json",
+                        //data: {pid: 0},
+                        success: function (data) {
+                            for (var i = 0; i < data.length; i++) {
+                                $("#finishConstructLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
+                            }
+                        }
+                    });
+                })
             })
         }
 
         //完成修改线路下拉列表
-        function FinishCorrectList() {
-            $(function () {
-                $.ajax({
-                    type: 'post',
-                    url: "QueryLineByStatusServlet",
-                    data:"status="+"5",
-                    dataType: "json",
-                    //data: {pid: 0},
-                    success: function (data) {
-                        $("#finishCorrectLineID").empty();
-                        $("#finishCorrectLineID").append("<option value=''>修改完成公交线路列表</option>");
-                        for (var i = 0; i < data.length; i++) {
-                            $("#finishCorrectLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
-                        }
-                    }
-                });
-            })
-        }
+        // function FinishCorrectList() {
+        //     $(function () {
+        //         $.ajax({
+        //             type: 'post',
+        //             url: "QueryLineByStatusServlet",
+        //             data:"status="+"5",
+        //             dataType: "json",
+        //             //data: {pid: 0},
+        //             success: function (data) {
+        //                 $("#finishCorrectLineID").empty();
+        //                 $("#finishCorrectLineID").append("<option value=''>修改完成公交线路列表</option>");
+        //                 for (var i = 0; i < data.length; i++) {
+        //                     $("#finishCorrectLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
+        //                 }
+        //             }
+        //         });
+        //     })
+        // }
 
         //线路投入运营按钮
         function correctLineStatus() {
             document.getElementById("form").style.display='none';
             document.getElementById("correctLineStatus").style.display='block';
             FinishConstructList();
-            FinishCorrectList();
+            // FinishCorrectList();
         }
 
         //线路投入运营 -查看该线路及站点
         function getLineByIDtoShow() {
             var $finishConstructLineID = $("#finishConstructLineID").val();
-            var $finishCorrectLineID = $("#finishCorrectLineID").val();
-            var queryLineID = "" ;
-            if($finishConstructLineID != "" && $finishCorrectLineID == "" ){
-                queryLineID = $finishConstructLineID;
-            }else if($finishConstructLineID == "" && $finishCorrectLineID != ""){
-                queryLineID = $finishCorrectLineID;
-            }else if($finishConstructLineID == "" && $finishCorrectLineID == ""){
-                alert("请从一个下拉框中选择想要查询的线路")
-            }else if($finishConstructLineID != "" && $finishCorrectLineID != ""){
-                alert("只能从一个下拉框中选择想要查询的线路！！")
-            }
+            //var $finishCorrectLineID = $("#finishCorrectLineID").val();
+            // var queryLineID = "" ;
+            // if($finishConstructLineID != "" && $finishCorrectLineID == "" ){
+            //     queryLineID = $finishConstructLineID;
+            // }else if($finishConstructLineID == "" && $finishCorrectLineID != ""){
+            //     queryLineID = $finishCorrectLineID;
+            // }else if($finishConstructLineID == "" && $finishCorrectLineID == ""){
+            //     alert("请从一个下拉框中选择想要查询的线路")
+            // }else if($finishConstructLineID != "" && $finishCorrectLineID != ""){
+            //     alert("只能从一个下拉框中选择想要查询的线路！！")
+            // }
+            var queryLineID = $finishConstructLineID;
             //console.log(queryLineID);
             if(queryLineID != "") {
                 $.ajax({
@@ -1006,23 +1081,26 @@
                         alert("系统异常！！")
                     }
                 })
+            }else{
+                alert("请从下拉列表中选择一条线路！")
             }
         }
 
         //线路投入运营
         function busOnLine() {
             var $finishConstructLineID = $("#finishConstructLineID").val();
-            var $finishCorrectLineID = $("#finishCorrectLineID").val();
-            var queryLineID = "" ;
-            if($finishConstructLineID != "" && $finishCorrectLineID == "" ){
-                queryLineID = $finishConstructLineID;
-            }else if($finishConstructLineID == "" && $finishCorrectLineID != ""){
-                queryLineID = $finishCorrectLineID;
-            }else if($finishConstructLineID == "" && $finishCorrectLineID == ""){
-                alert("请从一个下拉框中选择想要查询的线路")
-            }else if($finishConstructLineID != "" && $finishCorrectLineID != ""){
-                alert("只能从一个下拉框中选择想要查询的线路！！")
-            }
+            // var $finishCorrectLineID = $("#finishCorrectLineID").val();
+            // var queryLineID = "" ;
+            // if($finishConstructLineID != "" && $finishCorrectLineID == "" ){
+            //     queryLineID = $finishConstructLineID;
+            // }else if($finishConstructLineID == "" && $finishCorrectLineID != ""){
+            //     queryLineID = $finishCorrectLineID;
+            // }else if($finishConstructLineID == "" && $finishCorrectLineID == ""){
+            //     alert("请从一个下拉框中选择想要查询的线路")
+            // }else if($finishConstructLineID != "" && $finishCorrectLineID != ""){
+            //     alert("只能从一个下拉框中选择想要查询的线路！！")
+            // }
+            var queryLineID = $finishConstructLineID;
             //console.log(queryLineID);
             if(queryLineID != "") {
                 $.ajax({
@@ -1063,7 +1141,7 @@
                                 .bindPopup(stationId + " " + stationName + " 站点经纬度:" + stationLoc + " 站点顺序：" + stationSequence)
                                 .openPopup();
                         }
-                        FinishCorrectList();
+                        //FinishCorrectList();
                         FinishConstructList();
                         //跳转至线路查询层
                         $("div.leaflet-control-layers-base").children().eq(1).children().eq(0).children().eq(0).click()
@@ -1073,6 +1151,8 @@
                         alert("系统异常！！")
                     }
                 })
+            }else{
+                alert("请从下拉列表中选择一条线路！！")
             }
         }
 
@@ -1330,6 +1410,11 @@
             document.getElementById('form').style.display='none';
             document.getElementById('startNew').style.display='none';
             document.getElementById('startMoreNew').style.display='none';
+            $('#continueAddCoordLoc').val("")
+            $('#addStationLocation').val("")
+            $('#addCoordLoc').val("")
+            $('#correctCoordLoc').val("")
+            $('#correctStationLocation').val("")
         }
 
         //添加线路 继续 添加拐点至线路
@@ -1341,6 +1426,11 @@
             document.getElementById('addLine').style.display='none';
             document.getElementById('form').style.display='none';
             document.getElementById('startNew').style.display='none';
+            $('#continueAddCoordLoc').val("")
+            $('#addStationLocation').val("")
+            $('#addCoordLoc').val("")
+            $('#correctCoordLoc').val("")
+            $('#correctStationLocation').val("")
         }
 
         //添加线路-开始 添加站点 展示所有有效站点+对输入的车站名进行保存，新增数据库
@@ -1361,6 +1451,11 @@
                         document.getElementById('addLine').style.display='none';
                         document.getElementById('startNew').style.display='none';
                         document.getElementById('form').style.display='none';
+                        $('#continueAddCoordLoc').val("")
+                        $('#addStationLocation').val("")
+                        $('#addCoordLoc').val("")
+                        $('#correctCoordLoc').val("")
+                        $('#correctStationLocation').val("")
                         var arraydata = eval(data);
                         var len = arraydata.length;
                         for (var i = 0; i < len; i++) {
@@ -1395,6 +1490,11 @@
             document.getElementById('form').style.display='none';
             document.getElementById('startNew').style.display='none';
             document.getElementById('startMoreNew').style.display='none';
+            $('#continueAddCoordLoc').val("")
+            $('#addStationLocation').val("")
+            $('#addCoordLoc').val("")
+            $('#correctCoordLoc').val("")
+            $('#correctStationLocation').val("")
         }
 
         //添加线路-开始-添加拐点至线路-保存该拐点
@@ -1871,9 +1971,9 @@
             document.getElementById('form').style.display='none';
 
             var $continueAddLineName=$('#continueAddLineName').val();
-            console.log($continueAddLineName=="")
+            //console.log($continueAddLineName=="")
             var $newLineName=$("#newLineName").val();
-            console.log($newLineName=="")
+            //console.log($newLineName=="")
             var $lineName = null;
             if($continueAddLineName==""){
                 $lineName = $newLineName
@@ -2030,7 +2130,11 @@
             document.getElementById('addLine').style.display = 'none';
             document.getElementById('form').style.display = 'none';
             document.getElementById('continueNew').style.display='none';
-
+            $('#continueAddCoordLoc').val("")
+            $('#addStationLocation').val("")
+            $('#addCoordLoc').val("")
+            $('#correctCoordLoc').val("")
+            $('#correctStationLocation').val("")
             alert("在建线路的现有站点及线路图请在 在建线路层查看！！")
             $.ajax({
                 url:"LineQueryByNameServlet",
@@ -2104,7 +2208,7 @@
             document.getElementById('correctLine').style.display='block';
             document.getElementById('form').style.display='none';
             finishList();
-            correctingList();
+            //correctingList();
         }
 
         //修改线路-开始修改-增加拐点至线路
@@ -2123,9 +2227,14 @@
             document.getElementById('form').style.display='none';
             document.getElementById('startCorrect').style.display='none';
             document.getElementById('correctCoord').style.display='none';
+            $('#continueAddCoordLoc').val("")
+            $('#addStationLocation').val("")
+            $('#addCoordLoc').val("")
+            $('#correctCoordLoc').val("")
+            $('#correctStationLocation').val("")
         }
 
-        //下拉 现有及新建完毕线路 列表
+        //下拉 可修改列表 status=1,3,4，5
         function finishList() {
             $(function () {
                 $.ajax({
@@ -2142,43 +2251,53 @@
                         }
                     }
                 });
-            })
-        }
-
-        //下拉 修改中线路 列表 status=4
-        function correctingList(){
-            $(function () {
                 $.ajax({
                     type: 'post',
                     url: "QueryCorrectingLineServlet",
                     dataType: "json",
                     success: function (data) {
-                        $("#correctingLineID").empty();
-                        $("#correctingLineID").append("<option value=''>正在修改中的公交线路</option>");
                         for (var i = 0; i < data.length; i++) {
-                            $("#correctingLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
+                            $("#correctLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
                         }
                     }
                 });
             })
         }
 
+        // //下拉 修改中线路 列表 status=4
+        // function correctingList(){
+        //     $(function () {
+        //         $.ajax({
+        //             type: 'post',
+        //             url: "QueryCorrectingLineServlet",
+        //             dataType: "json",
+        //             success: function (data) {
+        //                 $("#correctingLineID").empty();
+        //                 $("#correctingLineID").append("<option value=''>正在修改中的公交线路</option>");
+        //                 for (var i = 0; i < data.length; i++) {
+        //                     $("#correctingLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
+        //                 }
+        //             }
+        //         });
+        //     })
+        // }
+
 
         //修改线路-查看该线路走向及站点和拐点
         function getLineByID() {
             var $correctLineID = $("#correctLineID").val();
-            var $correctingLineID = $("#correctingLineID").val();
-            var queryLineID = "" ;
-            if($correctLineID != "" && $correctingLineID == "" ){
-                queryLineID = $correctLineID;
-            }else if($correctLineID == "" && $correctingLineID != ""){
-                queryLineID = $correctingLineID;
-            }else if($correctLineID == "" && $correctingLineID == ""){
-                alert("请从一个下拉框中选择想要查询的线路")
-            }else if($correctLineID != "" && $correctingLineID != ""){
-                alert("只能从一个下拉框中选择想要查询的线路！！")
-            }
-            //console.log(queryLineID);
+            // var $correctingLineID = $("#correctingLineID").val();
+            // var queryLineID = "" ;
+            // if($correctLineID != "" && $correctingLineID == "" ){
+            //     queryLineID = $correctLineID;
+            // }else if($correctLineID == "" && $correctingLineID != ""){
+            //     queryLineID = $correctingLineID;
+            // }else if($correctLineID == "" && $correctingLineID == ""){
+            //     alert("请从一个下拉框中选择想要查询的线路")
+            // }else if($correctLineID != "" && $correctingLineID != ""){
+            //     alert("只能从一个下拉框中选择想要查询的线路！！")
+            // }
+            var queryLineID = $correctLineID;
             if(queryLineID != "") {
                 $.ajax({
                     url: "LineQueryByIDServlet",
@@ -2257,6 +2376,8 @@
                         alert("系统异常！！")
                     }
                 })
+            }else{
+                alert("请从下拉列表中选择想要查看的线路！！")
             }
         }
 
@@ -2301,25 +2422,26 @@
             document.getElementById('form').style.display='none';
             document.getElementById('correct').style.display='none';
             finishList();
-            correctingList();
+            //correctingList();
         }
 
         //修改线路-删除该站点
         function deleteStation(){
             var $correctLineID = $("#correctLineID").val();
-            var $correctingLineID = $("#correctingLineID").val();
+            // var $correctingLineID = $("#correctingLineID").val();
             var $correctStationName = $("#correctStationName").val();
             var $correctSequence = $("#correctSequence").val(); //拐点添加至该站点之后
-            var lineID = "";
-            if($correctLineID != "" && $correctingLineID == "" ){
-                lineID = $correctLineID;
-            }else if($correctLineID == "" && $correctingLineID != ""){
-                lineID = $correctingLineID;
-            }else if($correctLineID == "" && $correctingLineID == ""){
-                alert("请从一个下拉框中选择想要修改的线路")
-            }else if($correctLineID != "" && $correctingLineID != ""){
-                alert("只能从一个下拉框中选择想要修改的线路！！")
-            }
+            var lineID = $correctLineID
+            //var lineID = "";
+            // if($correctLineID != "" && $correctingLineID == "" ){
+            //     lineID = $correctLineID;
+            // }else if($correctLineID == "" && $correctingLineID != ""){
+            //     lineID = $correctingLineID;
+            // }else if($correctLineID == "" && $correctingLineID == ""){
+            //     alert("请从一个下拉框中选择想要修改的线路")
+            // }else if($correctLineID != "" && $correctingLineID != ""){
+            //     alert("只能从一个下拉框中选择想要修改的线路！！")
+            // }
             if(lineID!="") {
                 var obj = JSON.stringify({
                     'lineID': lineID,
@@ -2386,25 +2508,28 @@
                         alert("系统异常！！")
                     }
                 })
+            }else{
+                alert("请从下拉列表中选择一条想要修改的线路")
             }
         }
 
         //修改线路-保存该拐点
         function saveCorrectCoord(){
             var $correctLineID = $("#correctLineID").val();
-            var $correctingLineID = $("#correctingLineID").val();
+            //var $correctingLineID = $("#correctingLineID").val();
             var $addCoordLoc = $("#correctCoordLoc").val(); //x,y
             var $stopSequence = $("#correct_Sequence").val(); //拐点添加至该站点之后
-            var lineID = "";
-            if($correctLineID != "" && $correctingLineID == "" ){
-                lineID = $correctLineID;
-            }else if($correctLineID == "" && $correctingLineID != ""){
-                lineID = $correctingLineID;
-            }else if($correctLineID == "" && $correctingLineID == ""){
-                alert("请从一个下拉框中选择想要修改的线路")
-            }else if($correctLineID != "" && $correctingLineID != ""){
-                alert("只能从一个下拉框中选择想要修改的线路！！")
-            }
+            // var lineID = "";
+            // if($correctLineID != "" && $correctingLineID == "" ){
+            //     lineID = $correctLineID;
+            // }else if($correctLineID == "" && $correctingLineID != ""){
+            //     lineID = $correctingLineID;
+            // }else if($correctLineID == "" && $correctingLineID == ""){
+            //     alert("请从一个下拉框中选择想要修改的线路")
+            // }else if($correctLineID != "" && $correctingLineID != ""){
+            //     alert("只能从一个下拉框中选择想要修改的线路！！")
+            // }
+            var lineID = $correctLineID;
             if(lineID!="") {
                 var obj = JSON.stringify({
                     'lineID': lineID,
@@ -2468,23 +2593,26 @@
                         alert("系统异常！！")
                     }
                 })
+            }else{
+                alert("请从下拉列表中选择一条想要修改的线路！")
             }
         }
 
         //修改线路-添加该站点至线路
         function addStationToLine(){
             var $correctLineID = $("#correctLineID").val();
-            var $correctingLineID = $("#correctingLineID").val();
-            var lineID = "";
-            if($correctLineID != "" && $correctingLineID == "" ){
-                lineID = $correctLineID;
-            }else if($correctLineID == "" && $correctingLineID != ""){
-                lineID = $correctingLineID;
-            }else if($correctLineID == "" && $correctingLineID == ""){
-                alert("请从一个下拉框中选择想要修改的线路")
-            }else if($correctLineID != "" && $correctingLineID != ""){
-                alert("只能从一个下拉框中选择想要修改的线路！！")
-            }
+            // var $correctingLineID = $("#correctingLineID").val();
+            // var lineID = "";
+            // if($correctLineID != "" && $correctingLineID == "" ){
+            //     lineID = $correctLineID;
+            // }else if($correctLineID == "" && $correctingLineID != ""){
+            //     lineID = $correctingLineID;
+            // }else if($correctLineID == "" && $correctingLineID == ""){
+            //     alert("请从一个下拉框中选择想要修改的线路")
+            // }else if($correctLineID != "" && $correctingLineID != ""){
+            //     alert("只能从一个下拉框中选择想要修改的线路！！")
+            // }
+            var lineID = $correctLineID;
             var oldChecked = $('#oldStop').is(":checked");
             var newChecked = $('#newStop').is(":checked");
             var $stationName = $("#correctStationName").val();
@@ -2579,17 +2707,18 @@
         //修改线路-完成修改
         function  finishCorrect() {
             var $correctLineID = $("#correctLineID").val();
-            var $correctingLineID = $("#correctingLineID").val();
-            var lineID = "";
-            if($correctLineID != "" && $correctingLineID == "" ){
-                lineID = $correctLineID;
-            }else if($correctLineID == "" && $correctingLineID != ""){
-                lineID = $correctingLineID;
-            }else if($correctLineID == "" && $correctingLineID == ""){
-                alert("请从一个下拉框中选择想要修改的线路")
-            }else if($correctLineID != "" && $correctingLineID != ""){
-                alert("只能从一个下拉框中选择想要修改的线路！！")
-            }
+            // var $correctingLineID = $("#correctingLineID").val();
+            // var lineID = "";
+            // if($correctLineID != "" && $correctingLineID == "" ){
+            //     lineID = $correctLineID;
+            // }else if($correctLineID == "" && $correctingLineID != ""){
+            //     lineID = $correctingLineID;
+            // }else if($correctLineID == "" && $correctingLineID == ""){
+            //     alert("请从一个下拉框中选择想要修改的线路")
+            // }else if($correctLineID != "" && $correctingLineID != ""){
+            //     alert("只能从一个下拉框中选择想要修改的线路！！")
+            // }
+            var lineID = $correctLineID;
             $.ajax({
                 url: "FinishCorrectServlet",
                 data: "lineID=" + lineID,

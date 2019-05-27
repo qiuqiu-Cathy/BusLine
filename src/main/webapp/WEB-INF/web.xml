@@ -269,4 +269,15 @@
     <url-pattern>/BusOnLineServlet </url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <description></description>
+    <display-name>AllValidLinesServlet</display-name>
+    <servlet-name>AllValidLinesServlet </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.AllValidLinesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AllValidLinesServlet </servlet-name>
+    <url-pattern>/AllValidLinesServlet </url-pattern>
+  </servlet-mapping>
+
 </web-app>
