@@ -134,7 +134,7 @@ public class AddOldStopToLineServlet extends HttpServlet {
                 Coordinates c = changeIntoCoord(lineInfo.getCoord());
                 Line lineData = new Line(lineInfo.getId(),lineInfo.getLineName(),c,lineInfo.getStops());
                 String lineJson = gson.toJson(lineData);
-                System.out.println(lineJson);
+                //System.out.println(lineJson);
                 out.write(lineJson);
             }else{
                 System.out.println("线路更新成功，但未根据线路ID找到线路的具体信息");

@@ -310,7 +310,7 @@
                     <p><input type="button"  value="保存为在建" onclick="saveForContinue()"></p>
 <%--                    根据checkbox的值选择添加原有站点还是新站点，返回添加站点的视图，保存添加的站点，刷新目前已添加的站点组成的线路--%>
                     <p><input type="button"  value="保存并继续添加" onclick="saveAndContinue()"></p>
-                    <p><input type="button"  value="完成" onclick="saveAndEnd()"></p>
+                    <p><input type="button"  value="新建线路完成" onclick="saveAndEnd()"></p>
                 </form>
             </div>
         </div>
@@ -1270,6 +1270,8 @@
             document.getElementById('addStop').style.display='none';
             document.getElementById('startMoreNew').style.display='none';
             var $continueAddLineName=$('#continueAddLineName').val();
+            showStop();
+            alert("可在【站点信息层】查看所有有效站点");
             //根据在建列表的选择，显示正在建设中的线路
             $.ajax({
                 url:"LineQueryByNameServlet",
@@ -1511,7 +1513,6 @@
                     //跳转至在建线路展示层
                     $("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
                     alert("拐点已添加至线路");
-                    $("#continueAddLineName").val("");
                     $("#continueAddCoordLoc").val("");
                     $("#continueStopSequence").val("");
 

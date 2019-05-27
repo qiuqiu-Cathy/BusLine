@@ -43,7 +43,7 @@ public class QueryAllValidLineServlet extends HttpServlet {
         //查看所有有效线路
         request.setCharacterEncoding("utf-8");
         LineService service = new LineService();
-        List<Line> lines = service.queryAllValidLine();
+        List<Line> lines = service.queryLineByStatus("1");
         //ArrayList<String> coordsJson = new ArrayList<String>();
         //将从数据库查到的List<Line>中line的coord字段转换成coordinates形式再打包成List<Line>传给前端
         if(lines!=null){
