@@ -131,7 +131,14 @@
                  display: none; /*隐藏*/
                  position: fixed;
                  top: 100px;
-             }
+             }#neighborCoverage{ /*居民区站点覆盖率查询页面*/
+                   width: 60px; /*宽度*/
+                   height: 100px; /*高度*/
+                   background: #fff; /*背景色*/
+                   display: none; /*隐藏*/
+                   position: fixed;
+                   top: 100px;
+               }
 
 
 	</style>
@@ -166,8 +173,9 @@
 
         <p><input type="button" value="站点覆盖率展示" onclick="stopCoverage()"/></p>
 
-        <p><input type="text" id ="measure" autocomplete="on"/>
-        <input type="button" value="米内居民区站点覆盖率展示" onclick="neighbourCoverageQuery()"></p>
+<%--        <p><input type="text" id ="measure" autocomplete="on"/>--%>
+<%--        <input type="button" value="米内居民区站点覆盖率展示" onclick="neighbourCoverageQuery()"></p>--%>
+        <p><input type="button" value="居民区站点覆盖率查询" onclick="neighborCoverage()">
 
         <p><input type="button" value="线路删除" onclick="deleteLine()"></p>
 
@@ -177,6 +185,28 @@
 <%--        将status=3&&=5 的线路以下拉列表的形式，使其可以选中投入运营 线路状态改至1，包含站点的状态改至1--%>
         <p><input type="button"  value="线路投入运营" onclick="correctLineStatus()"></p>
 	</div>
+
+<%--bug！！--%>
+    <div id="neighborCoverage" title="居民区站点覆盖率查询" style="" >
+        <div style="width:500px;height: 40px;">
+            <h3>居民区站点覆盖率查询</h3>
+            <form>
+                <label class="col-sm-2 control-label">输入查询半径：</label>
+                <p><input type="text" id ="measure" autocomplete="on"/></p>
+
+                <label class="col-sm-2 control-label">选择一个居民区：</label>
+                <div class="col-sm-4">
+                    <select name="neighborID" id="neighborID" class="text input-large form-control">
+                        <option value="">居民区</option>
+                    </select>
+                </div>
+
+                <p><input type="button" value="居民区站点覆盖率查询" onclick="neighbourCoverageQuery()"></p>
+
+                <p><input type="button" value="返回" onclick="backToForm()"></p>
+            </form>
+        </div>
+    </div>
 
 
 <%--    线路投入运营页面--%>
@@ -190,13 +220,6 @@
                         <option value="">待投入运营公交线</option>
                     </select>
                 </div>
-
-<%--                <label class="col-sm-2 control-label">修改完毕线路</label>--%>
-<%--                <div class="col-sm-4">--%>
-<%--                    <select name="finishCorrectLineID" id="finishCorrectLineID" class="text input-large form-control">--%>
-<%--                        <option value="">修改完毕线路列表</option>--%>
-<%--                    </select>--%>
-<%--                </div>--%>
 
                 <p><input type="button" value="查看该线路走向及站点" onclick="getLineByIDtoShow()"></p>
 <%--                <p><input type="button" value="查看该线路走向及站点和拐点" onclick="getLineByID()"></p>--%>
@@ -511,6 +534,17 @@
 			var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
 		}
 
+		//控制居民区站点覆盖率页面跳转
+		function neighborCoverage() {
+            document.getElementById('neighborCoverage').style.display='block';
+            document.getElementById('form').style.display='none';
+        }
+
+        //居民区站点覆盖率查询-返回
+        function backToForm() {
+            document.getElementById('neighborCoverage').style.display='none';
+            document.getElementById('form').style.display='block';
+        }
 
 		//所有有效线路的显示风格
 		var myStyle = {
@@ -809,37 +843,6 @@
             })
         }
 
-
-        //显示所有有效站点-但不会跳转到站点信息层
-        function showStop() {
-            $.ajax({
-                url:"StationServlet",
-                dataType:"json",
-                success:function (data) {
-                    var arraydata = eval(data);
-                    var len = arraydata.length;
-                    if(global_show_markers.length>0){
-                        for(var i=0;i<global_show_markers.length;i++){
-                            stationMap.removeLayer(global_show_markers[i])
-                        }
-                        global_show_markers = [];
-                    }
-                    for(var i=0;i<len;i++)
-                    {
-                        var stopLocation = eval(arraydata[i].location);
-                        var stationName = arraydata[i].stationName
-                        var stationLoc = arraydata[i].location
-                        global_show_markers[i] = L.marker(stopLocation)
-                            .addTo(stationMap)
-                            .bindPopup(stationName+" "+stationLoc)
-                            .openPopup();
-                    }
-                },
-                error:function(){
-                    alert("有效站点信息显示异常！！")
-                }
-            })
-        }
 
         var global_neigh_circle=[];
 		//查询x米内居民区附近拥有的站点数量覆盖率图
