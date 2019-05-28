@@ -99,6 +99,7 @@ public class LineService {
         }
     }
 
+
     public boolean updateLineByNameCoordStops(String lineName,String coord, String stops){
         return lineQueryDao.updateLineByNameCoordStops(lineName,coord,stops);
     }

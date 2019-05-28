@@ -280,4 +280,15 @@
     <url-pattern>/AllValidLinesServlet </url-pattern>
   </servlet-mapping>
 
+
+    <servlet>
+        <description></description>
+        <display-name>FinishConstructServlet</display-name>
+        <servlet-name>FinishConstructServlet </servlet-name>
+        <servlet-class>com.qiu.shu.busline.action.FinishConstructServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FinishConstructServlet </servlet-name>
+        <url-pattern>/FinishConstructServlet </url-pattern>
+    </servlet-mapping>
 </web-app>
