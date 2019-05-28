@@ -947,8 +947,6 @@
 
 
 
-
-
         // 线路投入运营控制js
         //完成新建线路下拉列表
         function FinishConstructList() {
@@ -983,26 +981,6 @@
                 })
             })
         }
-
-        //完成修改线路下拉列表
-        // function FinishCorrectList() {
-        //     $(function () {
-        //         $.ajax({
-        //             type: 'post',
-        //             url: "QueryLineByStatusServlet",
-        //             data:"status="+"5",
-        //             dataType: "json",
-        //             //data: {pid: 0},
-        //             success: function (data) {
-        //                 $("#finishCorrectLineID").empty();
-        //                 $("#finishCorrectLineID").append("<option value=''>修改完成公交线路列表</option>");
-        //                 for (var i = 0; i < data.length; i++) {
-        //                     $("#finishCorrectLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
-        //                 }
-        //             }
-        //         });
-        //     })
-        // }
 
         //线路投入运营按钮
         function correctLineStatus() {
@@ -1278,6 +1256,45 @@
 
 <%--    控制新建线路弹出框等--%>
     <script type="text/javascript">
+
+        var global_stopAdd_circles = [];
+        //显示所有站点于新增页面ccc
+        function stopAdd() {
+            $.ajax({
+                url:"StationServlet",
+                dataType:"json",
+                success:function (data) {
+                    var arraydata = eval(data);
+                    var len = arraydata.length;
+                    if(global_stopAdd_circles.length>0){
+                        for(var i=0;i<global_stopAdd_circles.length;i++){
+                            underConstructionMap.removeLayer(global_stopAdd_circles[i])
+                        }
+                        global_stopAdd_circles = [];
+                    }
+                    for(var i=0;i<len;i++)
+                    {
+                        var stopLocation = eval(arraydata[i].location);
+                        var stationName = arraydata[i].stationName
+                        var stationLoc = arraydata[i].location
+                        global_stopAdd_circles[i] = L.circle(stopLocation, {
+                            color: '#D1EEEE',
+                            weight: 0,
+                            fillColor: '#FF0000',
+                            radius: 30,
+                            fillOpacity: 0.7
+                        }).addTo(underConstructionMap).bindPopup(stationName+" "+stationLoc).openPopup();
+                    }
+                    //跳转至站点信息层
+                    //$("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
+                },
+                error:function(){
+                    alert("系统异常！！")
+                }
+            })
+        }
+
+
         var global_add_line;
         var global_add_markers = [];
         //添加线路
@@ -1322,6 +1339,15 @@
             document.getElementById('continueAddCoord').style.display='none';
             document.getElementById('addStop').style.display='none';
             document.getElementById('startMoreNew').style.display='none';
+            if(global_add_line!=null){
+                underConstructionMap.removeLayer(global_add_line);
+            }
+            if(global_add_markers.length>0){
+                for(var i=0;i<global_add_markers.length;i++){
+                    underConstructionMap.removeLayer(global_add_markers[i]);
+                }
+                global_add_markers = [];
+            }
         }
 
         //添加线路 开始-保存并继续后的页面
@@ -1347,8 +1373,9 @@
             document.getElementById('addStop').style.display='none';
             document.getElementById('startMoreNew').style.display='none';
             var $continueAddLineName=$('#continueAddLineName').val();
-            showStop();
-            alert("可在【站点信息层】查看所有有效站点");
+            // showStop();
+            // alert("可在【站点信息层】查看所有有效站点");
+            stopAdd();
             //根据在建列表的选择，显示正在建设中的线路
             $.ajax({
                 url:"LineQueryByNameServlet",
@@ -1452,25 +1479,12 @@
                         $('#addCoordLoc').val("")
                         $('#correctCoordLoc').val("")
                         $('#correctStationLocation').val("")
-                        var arraydata = eval(data);
-                        var len = arraydata.length;
-                        for (var i = 0; i < len; i++) {
-                            var stopLocation = eval(arraydata[i].location);
-                            //将所有有效站点展示在有效线路层
-                            var stationName = arraydata[i].stationName
-                            var stationLoc = arraydata[i].location
-                            var marker = L.marker(stopLocation)
-                                .addTo(stationMap)
-                                .bindPopup(stationName + " " + stationLoc)
-                                .openPopup();
-                            //console.log(stationName)
-                            //XXX与站点显示的站点显示可能会重合
-                        }
-                        //跳转至站点信息层
-                        $("div.leaflet-control-layers-base").children().eq(3).children().eq(0).children().eq(0).click()
+                        stopAdd();
+                        //跳转至在建线路层
+                        $("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
                     }
                 },
-                error:function(xhr,errorMessage,e){
+                error:function(){
                     alert("系统异常！！")
                 }
             })
@@ -1503,7 +1517,7 @@
                 'loc': $addCoordLoc,
                 'sequence': $stopSequence
             });
-            console.log(obj);
+            //console.log(obj);
             $.ajax({
                 url:"AddCoordServlet",
                 data:"obj="+ obj,
@@ -1793,6 +1807,8 @@
                 document.getElementById('addLine').style.display='none';
                 document.getElementById('form').style.display='none';
                 document.getElementById('startNew').style.display='none';
+                document.getElementById('startMoreNew').style.display = 'none';
+                document.getElementById('continueNew').style.display = 'none';
             }
         }
 
@@ -1808,7 +1824,7 @@
             $('#addCoordLoc').val("")
             $('#correctCoordLoc').val("")
             $('#correctStationLocation').val("")
-            alert("在建线路的现有站点及线路图请在 在建线路层查看！！")
+            stopAdd();
             $.ajax({
                 url:"LineQueryByNameServlet",
                 data:"lineName="+$continueAddLineName,
@@ -1863,7 +1879,6 @@
                     alert("系统异常！！")
                 }
             })
-            stopShow();
         }
 
         //新建-开始/继续-添加站点-返回
@@ -1948,6 +1963,43 @@
         var global_correct_coords = [];
         var global_tmp_stop_marker =  null;
 
+        var global_stopCorrect_circles = [];
+        //显示所有站点于修改页面ccc
+        function stopCorrect() {
+            $.ajax({
+                url:"StationServlet",
+                dataType:"json",
+                success:function (data) {
+                    var arraydata = eval(data);
+                    var len = arraydata.length;
+                    if(global_stopCorrect_circles.length>0){
+                        for(var i=0;i<global_stopCorrect_circles.length;i++){
+                            correctLineMap.removeLayer(global_stopCorrect_circles[i])
+                        }
+                        global_stopCorrect_circles = [];
+                    }
+                    for(var i=0;i<len;i++)
+                    {
+                        var stopLocation = eval(arraydata[i].location);
+                        var stationName = arraydata[i].stationName
+                        var stationLoc = arraydata[i].location
+                        global_stopCorrect_circles[i] = L.circle(stopLocation, {
+                            color: '#D1EEEE',
+                            weight: 0,
+                            fillColor: '#FF0000',
+                            radius: 30,
+                            fillOpacity: 0.7
+                        }).addTo(correctLineMap).bindPopup(stationName+" "+stationLoc).openPopup();
+                    }
+                    //跳转至站点信息层
+                    //$("div.leaflet-control-layers-base").children().eq(5).children().eq(0).children().eq(0).click()
+                },
+                error:function(){
+                    alert("系统异常！！")
+                }
+            })
+        }
+
         //修改线路
         function correctLine() {
             document.getElementById('correctLine').style.display='block';
@@ -2008,25 +2060,6 @@
                 });
             })
         }
-
-        // //下拉 修改中线路 列表 status=4
-        // function correctingList(){
-        //     $(function () {
-        //         $.ajax({
-        //             type: 'post',
-        //             url: "QueryCorrectingLineServlet",
-        //             dataType: "json",
-        //             success: function (data) {
-        //                 $("#correctingLineID").empty();
-        //                 $("#correctingLineID").append("<option value=''>正在修改中的公交线路</option>");
-        //                 for (var i = 0; i < data.length; i++) {
-        //                     $("#correctingLineID").append('<option value=' + data[i].id + '>' + data[i].lineName + '</option>');
-        //                 }
-        //             }
-        //         });
-        //     })
-        // }
-
 
         //修改线路-查看该线路走向及站点和拐点
         function getLineByID() {
@@ -2104,7 +2137,7 @@
                                     global_correct_coords[i] = L.circle(stopLoc, {
                                         color: '#D1EEEE',
                                         weight: 0,
-                                        fillColor: '#FF0000',
+                                        fillColor: '#4876FF',
                                         radius: 10,
                                         fillOpacity: 1
                                     }).addTo(correctLineMap)
@@ -2117,7 +2150,7 @@
                         //跳转至修改层
                         $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
                     },
-                    error: function (xhr, errorMessage, e) {
+                    error: function () {
                         alert("系统异常！！")
                     }
                 })
@@ -2147,7 +2180,7 @@
 
         //修改线路-开始修改-修改站点
         function startCorrect() {
-            showStop();
+            stopCorrect();
             //跳转至修改层
             document.getElementById('startCorrect').style.display='block';
             document.getElementById('correctLine').style.display='none';
@@ -2157,7 +2190,6 @@
             $("#correctSequence").val("");
             $("#oldStop").prop('checked',false);
             $("#newStop").prop('checked',false);
-            alert("可在站点信息层查看所有有效站点！")
         }
 
         //修改线路-开始修改-返回 返回继续修改其他线路
@@ -2334,7 +2366,7 @@
                         $("#correctCoordLoc").val("");
                         $("#correct_Sequence").val("");
                     },
-                    error: function (xhr, errorMessage, e) {
+                    error: function () {
                         alert("系统异常！！")
                     }
                 })
@@ -2433,7 +2465,7 @@
                         }
                         correct();
 
-                        //跳转至在建线路展示层
+                        //跳转至修改线路展示层
                         $("div.leaflet-control-layers-base").children().eq(6).children().eq(0).children().eq(0).click()
                         alert("站点已添加至线路")
                         $("#correctStationName").val("");
