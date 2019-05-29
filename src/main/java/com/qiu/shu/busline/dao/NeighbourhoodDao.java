@@ -11,7 +11,7 @@ public class NeighbourhoodDao {
     private static final String USERNAME = "busRoot";
     private static final String PWD = "12345678";
 
-    //查询 查询所有有效的公交线路的所有字段信息
+    //查询 查询所有居民区
     public static List<Neighbourhood> queryAllNeighbourhood() {
         List<Neighbourhood> neighbourhoods = new ArrayList<Neighbourhood>();
         Neighbourhood neighbourhood = null;
@@ -39,6 +39,49 @@ public class NeighbourhoodDao {
                 neighbourhoods.add(neighbourhood);
             }
             return neighbourhoods;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (pstmt != null)
+                    pstmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //查询 根据ID查询居民区
+    public static Neighbourhood queryByID(String queryID) {
+        Neighbourhood neighbourhood = null;
+        PreparedStatement pstmt = null;
+        Connection connection = null;
+        ResultSet rs = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, USERNAME, PWD);
+            String sql = "select * from neighbourhood where id = ?";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, queryID);
+            rs = pstmt.executeQuery();//返回值表示增删改几条数据
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String neighborName = rs.getString("neighborName");
+                String location = rs.getString("location");
+                neighbourhood = new Neighbourhood(id,neighborName,location);
+            }
+            return neighbourhood;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return null;

@@ -13,9 +13,6 @@ import java.util.List;
 
 public class NeighbourhoodService {
 
-
-
-
 //    public static void main(String[] args) {
 //        int measure = 500;
 //        //String str = "[[31.29672,121.321794],[31.292049,121.314194],[31.29672,121.321794],[31.292049,121.314194]]";
@@ -87,5 +84,35 @@ public class NeighbourhoodService {
         }
         //System.out.println(neighbourhoods);
         return neighbourhoods;
+    }
+
+    //返回所有有效的居民区
+    public static List<Neighbourhood> queryAllNeighbor(){
+        NeighbourhoodDao neighbourhoodDao = new NeighbourhoodDao();
+        return neighbourhoodDao.queryAllNeighbourhood();
+    }
+
+    public static Neighbourhood queryCoverageByID(String id,int measure){
+        NeighbourhoodDao neighbourhoodDao = new NeighbourhoodDao();
+        StationValidDao stationValidDao = new StationValidDao();
+        DealNeighbourUtil util = new DealNeighbourUtil();
+        DealCoordUtil util2 = new DealCoordUtil();
+
+        List<Station> stations = stationValidDao.queryAllValidStation();
+        int stationsSize = stations.size();
+
+        Neighbourhood neighbourhood = neighbourhoodDao.queryByID(id);
+
+        List<Float> loc = util.locationIntoFloatList(neighbourhood.getLocation());
+        neighbourhood.setNumber(0);
+        for(int j=0;j<stationsSize;j++){
+            Station station  = stations.get(j);
+            List<Double> stationLoc = util2.changeIntoDoubleList(station.getLocation());
+            double dis = CalulateTwoLanLon.getDistance(stationLoc.get(0),stationLoc.get(1),loc.get(0),loc.get(1));
+            if(dis<=measure){
+                neighbourhood.setNumber(neighbourhood.getNumber()+1);
+            }
+        }
+        return neighbourhood;
     }
 }

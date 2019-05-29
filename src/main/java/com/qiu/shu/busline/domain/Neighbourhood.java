@@ -5,6 +5,15 @@ public class Neighbourhood {
     private String neighborhoodName;
     private String location;
     private int number;
+    private int measure;//查询距离
+
+    public int getMeasure() {
+        return measure;
+    }
+
+    public void setMeasure(int measure) {
+        this.measure = measure;
+    }
 
 
     public Neighbourhood(String id, String neighborhoodName, String location, int number) {
@@ -12,6 +21,12 @@ public class Neighbourhood {
         this.neighborhoodName = neighborhoodName;
         this.location = location;
         this.number = number;
+    }
+
+    public Neighbourhood(String id, String neighborhoodName, String location) {
+        this.id = id;
+        this.neighborhoodName = neighborhoodName;
+        this.location = location;
     }
 
     public String getId() {

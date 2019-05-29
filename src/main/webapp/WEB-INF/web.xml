@@ -291,4 +291,26 @@
         <servlet-name>FinishConstructServlet </servlet-name>
         <url-pattern>/FinishConstructServlet </url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <description></description>
+        <display-name>AllNeighborServlet</display-name>
+        <servlet-name>AllNeighborServlet </servlet-name>
+        <servlet-class>com.qiu.shu.busline.action.AllNeighborServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AllNeighborServlet </servlet-name>
+        <url-pattern>/AllNeighborServlet </url-pattern>
+    </servlet-mapping>
+
+  <servlet>
+    <description></description>
+    <display-name>NeighbourCoverageByID</display-name>
+    <servlet-name>NeighbourCoverageByID </servlet-name>
+    <servlet-class>com.qiu.shu.busline.action.NeighbourCoverageByID</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NeighbourCoverageByID </servlet-name>
+    <url-pattern>/NeighbourCoverageByID </url-pattern>
+  </servlet-mapping>
 </web-app>

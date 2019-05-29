@@ -201,7 +201,7 @@
                     </select>
                 </div>
 
-                <p><input type="button" value="居民区站点覆盖率查询" onclick="neighbourCoverageQuery()"></p>
+                <p><input type="button" value="居民区站点覆盖率查询" onclick="neighbourCoverageByID()"></p>
 
                 <p><input type="button" value="返回" onclick="backToForm()"></p>
             </form>
@@ -534,17 +534,7 @@
 			var marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
 		}
 
-		//控制居民区站点覆盖率页面跳转
-		function neighborCoverage() {
-            document.getElementById('neighborCoverage').style.display='block';
-            document.getElementById('form').style.display='none';
-        }
 
-        //居民区站点覆盖率查询-返回
-        function backToForm() {
-            document.getElementById('neighborCoverage').style.display='none';
-            document.getElementById('form').style.display='block';
-        }
 
 		//所有有效线路的显示风格
 		var myStyle = {
@@ -843,73 +833,6 @@
             })
         }
 
-
-        var global_neigh_circle=[];
-		//查询x米内居民区附近拥有的站点数量覆盖率图
-        function neighbourCoverageQuery() {
-            var $measure = $("#measure").val();
-            $.ajax({
-                url:"NeighbourCoverageServlet",
-                data:"measure="+$measure,
-                dataType:"json",
-                success:function (data) {
-                    var obj = eval(data);
-                    var len = obj.length;
-                    if(global_neigh_circle.length>0){
-                        for(var i=0;i<global_neigh_circle.length;i++){
-                            neighbourCoverageMap.removeLayer(global_neigh_circle[i])
-                        }
-                        global_neigh_circle = [];
-                    }
-                    for(var i=0;i<len;i++)
-                    {
-                        var neighbourLoc = obj[i].location;
-                        neighbourLoc = "[" + neighbourLoc + "]";
-                        var loc = eval(neighbourLoc);
-                        if(obj[i].number==0){
-                            global_neigh_circle[i] = L.circle(loc, {
-                                color: '#D1EEEE',
-                                weight: 0,
-                                fillColor: '#FF3030',
-                                radius: $measure,
-                                fillOpacity: 0.08
-                            }).addTo(neighbourCoverageMap)
-                        }
-                        else if(obj[i].number<=2){
-                            global_neigh_circle[i] = L.circle(loc, {
-                                color: '#D1EEEE',
-                                weight: 0,
-                                fillColor: '#FF3030',
-                                radius: $measure,
-                                fillOpacity: 0.1
-                            }).addTo(neighbourCoverageMap)
-                        }else if(obj[i].number>=3 && obj[i].number<=5){
-                            global_neigh_circle[i] = L.circle(loc, {
-                                color: '#D1EEEE',
-                                weight: 0,
-                                fillColor: '#FF3030',
-                                radius: $measure,
-                                fillOpacity: 0.15
-                            }).addTo(neighbourCoverageMap)
-                        }else if(obj[i].number>5){
-                            global_neigh_circle[i] = L.circle(loc, {
-                                color: '#D1EEEE',
-                                weight: 0,
-                                fillColor: '#FF3030',
-                                radius: $measure,
-                                fillOpacity: 0.2
-                            }).addTo(neighbourCoverageMap)
-                        }
-                    }
-                    //跳转至居民区覆盖率层
-                    $("div.leaflet-control-layers-base").children().eq(4).children().eq(0).children().eq(0).click()
-                    //alert("【绿色及蓝色】表示站点数小于等于两个！！【红色及橙色】表示站点数大于等于三个！！")
-                },
-                error:function(){
-                    alert("系统异常！！")
-                }
-            })
-        }
 
         //使其加载首页的时候就能显示该列表
         $(function () {
@@ -1256,6 +1179,196 @@
         }
 
 	</script>
+
+
+<%--    控制居民区覆盖率展示--%>
+    <script type="text/javascript">
+        //控制居民区站点覆盖率页面跳转
+        function neighborCoverage() {
+            document.getElementById('neighborCoverage').style.display='block';
+            document.getElementById('form').style.display='none';
+            neighborList();
+            $("#measure").val("");
+        }
+
+        //居民区站点覆盖率查询-返回
+        function backToForm() {
+            document.getElementById('neighborCoverage').style.display='none';
+            document.getElementById('form').style.display='block';
+        }
+
+        //居民区下拉列表
+        function neighborList() {
+            $(function () {
+                $.ajax({
+                    url: "AllNeighborServlet",
+                    dataType: "json",
+                    //data: {pid: 0},
+                    success: function (data) {
+                        $("#neighborID").empty();
+                        $("#neighborID").append("<option value=''>请选择一个居民区</option>");
+                        for (var i = 0; i < data.length; i++) {
+                            $("#neighborID").append('<option value=' + data[i].id + '>' + data[i].neighborhoodName + '</option>');
+                        }
+                    }
+                });
+            })
+        }
+
+        var global_neigh_circle=[];
+        //查询x米内居民区附近拥有的站点数量覆盖率图
+        function neighbourCoverageQuery() {
+            var $measure = $("#measure").val();
+            $.ajax({
+                url:"NeighbourCoverageServlet",
+                data:"measure="+$measure,
+                dataType:"json",
+                success:function (data) {
+                    var obj = eval(data);
+                    var len = obj.length;
+                    if(global_neigh_circle.length>0){
+                        for(var i=0;i<global_neigh_circle.length;i++){
+                            neighbourCoverageMap.removeLayer(global_neigh_circle[i])
+                        }
+                        global_neigh_circle = [];
+                    }
+                    for(var i=0;i<len;i++)
+                    {
+                        var neighbourLoc = obj[i].location;
+                        neighbourLoc = "[" + neighbourLoc + "]";
+                        var loc = eval(neighbourLoc);
+                        if(obj[i].number==0){
+                            global_neigh_circle[i] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.08
+                            }).addTo(neighbourCoverageMap)
+                        }
+                        else if(obj[i].number<=2){
+                            global_neigh_circle[i] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.1
+                            }).addTo(neighbourCoverageMap)
+                        }else if(obj[i].number>=3 && obj[i].number<=5){
+                            global_neigh_circle[i] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.15
+                            }).addTo(neighbourCoverageMap)
+                        }else if(obj[i].number>5){
+                            global_neigh_circle[i] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.2
+                            }).addTo(neighbourCoverageMap)
+                        }
+                    }
+                    //跳转至居民区覆盖率层
+                    $("div.leaflet-control-layers-base").children().eq(4).children().eq(0).children().eq(0).click()
+                    //alert("【绿色及蓝色】表示站点数小于等于两个！！【红色及橙色】表示站点数大于等于三个！！")
+                },
+                error:function(){
+                    alert("系统异常！！")
+                }
+            })
+        }
+
+
+        function neighbourCoverageByID() {
+            var $measure = $("#measure").val();
+            var $neighborID = $("#neighborID").val();
+            if($measure == ""){
+                alert("请输入查询半径！")
+            }
+            if($neighborID == ""){
+                alert("请从下拉列表中选择一个居民区！！")
+            }
+            if($measure!="" && $neighborID!=""){
+                console.log("半径："+$measure +",居民区ID："+ $neighborID)
+                var obj = JSON.stringify({
+                    'measure':$measure,
+                    'id': $neighborID,
+                });
+                $.ajax({
+                    url:"NeighbourCoverageByID",
+                    data:"obj="+obj,
+                    type:"post",
+                    dataType:"json",
+                    success:function (data) {
+                        var result = eval(data);
+                        if(global_neigh_circle.length>0){
+                            for(var i=0;i<global_neigh_circle.length;i++){
+                                neighbourCoverageMap.removeLayer(global_neigh_circle[i])
+                            }
+                            global_neigh_circle = [];
+                        }
+
+                        var neighbourLoc = result.location;
+                        neighbourLoc = "[" + neighbourLoc + "]";
+                        var loc = eval(neighbourLoc);
+                        if(result.number==0){
+                            global_neigh_circle[0] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.1
+                            }).addTo(neighbourCoverageMap).bindPopup("居民区："+result.neighborhoodName+" "+$measure+"米 范围内站点个数："+result.number)
+                        }
+                        else if(result.number<=2){
+                            global_neigh_circle[0] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.3
+                            }).addTo(neighbourCoverageMap).bindPopup("居民区："+result.neighborhoodName+" "+$measure+"米 范围内站点个数："+result.number)
+                        }else if(result.number>=3 && result.number<=5){
+                            global_neigh_circle[0] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.5
+                            }).addTo(neighbourCoverageMap).bindPopup("居民区："+result.neighborhoodName+" "+$measure+"米 范围内站点个数："+result.number)
+                        }else if(result.number>5){
+                            global_neigh_circle[0] = L.circle(loc, {
+                                color: '#D1EEEE',
+                                weight: 0,
+                                fillColor: '#FF3030',
+                                radius: $measure,
+                                fillOpacity: 0.7
+                            }).addTo(neighbourCoverageMap).bindPopup("居民区："+result.neighborhoodName+" "+$measure+"米 范围内站点个数："+result.number)
+                        }
+                        global_neigh_circle[1] = L.circle(loc, {
+                            color: '#D1EEEE',
+                            weight: 0,
+                            fillColor: '#FF3030',
+                            radius: 20,
+                            fillOpacity: 1
+                        }).addTo(neighbourCoverageMap)
+
+                        //跳转至居民区覆盖率层
+                        $("div.leaflet-control-layers-base").children().eq(4).children().eq(0).children().eq(0).click()
+                        //alert("【绿色及蓝色】表示站点数小于等于两个！！【红色及橙色】表示站点数大于等于三个！！")
+                    },
+                    error:function(){
+                        alert("系统异常！！")
+                    }
+                })
+
+            }
+        }
+    </script>
 
 <%--    控制新建线路弹出框等--%>
     <script type="text/javascript">
